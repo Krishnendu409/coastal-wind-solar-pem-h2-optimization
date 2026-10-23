@@ -135,22 +135,22 @@ r_ab2 = p_abs.add_run(
     "audited, multi-year Process Systems Engineering (PSE) and physics-guided machine learning framework. First, analysis of six contiguous "
     "years (2019–2024, 52,608 hourly observations) of uninflated NASA POWER MERRA-2 meteorological data demonstrates that local coastal wind "
     "in the Udupi–Mangalore corridor (13.35°N, 74.79°E) yields a low capacity factor (CF = 14.70%), whereas open-access wheeled wind from the "
-    "Chitradurga–Gadag highland corridor (14.23°N, 76.40°E, delivered CF = 43.29%) achieves strong seasonal complementarity with on-site coastal "
-    "solar PV (CF = 21.23%). Second, a first-principles high-current PEMWE model calibrated against published experimental data (14 points, "
-    "Nafion 115, 75°C, 30 bar, RMSE = 3.10 mV, R² = 0.99971) is coupled with catalytic recombination to guarantee anodic H₂-in-O₂ ≤ 1.64 mol% "
-    "(<50% of lower explosion limit) at turndown (i_min = 0.20 A/cm²). Third, a strictly leak-free 2×5 surrogate ablation establishes that a compact "
-    "physics-guided Multi-Layer Perceptron (Green-MLP, 4,612 parameters) achieves 5-fold cross-validation R² = 0.9943 ± 0.0031 (R² = 0.9982 on "
-    "LCOH, RMSE = INR 1.66 ± 0.51/kg) with an 89.94% FLOP reduction over regularized deep networks and a 4,206× inference acceleration over "
-    "Numba-accelerated 52,608-hour simulations. Fourth, a 5-seed constrained NSGA-II optimization with split-CAPEX modeling reveals a critical "
-    "trade-off: dynamic current overload (i_max > 1.80 A/cm²) does not decrease Levelized Cost of Hydrogen (LCOH) because balance-of-plant (BOP) "
-    "and rectifier capital costs scale with peak megawatt capacity, favoring a knee-point design (48.02 MW wind, 72.77 MW solar, 43.61 MW nominal "
-    "PEM at i_max* = 1.764 A/cm², 86.86 MWh battery) delivering LCOH = INR 332.51/kg H₂ ($3.96/kg), LPSP = 0.62%, and 12.0-year stack lifetime. "
-    "Wheeled highland wind lowers LCOH by 12.96% relative to an optimized pure coastal hybrid plant (INR 382.04/kg) and avoids severe supply failure "
-    "(LPSP = 21.30%) if identical hardware operates solely on coastal wind. Finally, a 9-sensor latent-variable Principal Component Analysis (PCA, "
-    "k=3, 96.03% variance) benchmarked across 100 dynamic realizations demonstrates that while load-compensated 1D voltage-residual EWMA detects "
-    "incipient membrane dehydration with marginally lower latency (10.6 h vs. 11.6 h), PCA provides unique multi-sensor root-cause diagnosis via "
-    "contribution plots, isolating thermal-pressure anomalies (95.2% combined contribution) during dehydration and overpotential-production anomalies "
-    "during anodic flooding (100% detection rate)."
+    "Chitradurga–Gadag highland corridor (14.23°N, 76.40°E, delivered CF = 43.29% using an IEC Class IIIB low-wind turbine with v_r = 8.4 m/s "
+    "vs. standard Class II at 31.20%) achieves strong seasonal complementarity with on-site coastal solar PV (CF = 21.23%). Second, a first-principles "
+    "high-current PEMWE model calibrated against a literature benchmark of 14 semi-empirical polarization points (Nafion 115, 75°C, 30 bar, "
+    "RMSE = 3.10 mV, R² = 0.99971) is coupled with catalytic recombination to guarantee anodic H₂-in-O₂ ≤ 1.64 mol% (<50% of lower explosion limit) "
+    "at turndown (i_min = 0.20 A/cm²). Third, a strictly leak-free 2×5 surrogate ablation establishes that a compact physics-guided Multi-Layer "
+    "Perceptron (Green-MLP, 4,612 parameters) achieves 5-fold cross-validation R² = 0.9943 ± 0.0031 (R² = 0.9982 on LCOH, RMSE = INR 1.66 ± 0.51/kg) "
+    "with an 89.94% FLOP reduction over regularized deep networks and a 4,206× inference acceleration over Numba-accelerated 52,608-hour simulations. "
+    "Fourth, a 5-seed constrained NSGA-II optimization with split-CAPEX modeling reveals a critical trade-off: dynamic current overload (i_max > 1.80 A/cm²) "
+    "does not decrease Levelized Cost of Hydrogen (LCOH) because balance-of-plant (BOP) and rectifier capital costs scale with peak megawatt capacity, "
+    "favoring a knee-point design (48.02 MW wind, 72.77 MW solar, 43.61 MW nominal PEM at i_max* = 1.764 A/cm², 86.86 MWh battery) delivering "
+    "LCOH = INR 332.51/kg H₂ ($3.96/kg), LPSP = 0.62%, and 12.0-year stack lifetime. Wheeled highland wind lowers LCOH by 12.96% relative to an "
+    "optimized pure coastal hybrid plant (INR 382.04/kg) and avoids severe supply failure (LPSP = 21.30%) if identical hardware operates solely on coastal wind. "
+    "Finally, a 9-sensor latent-variable Principal Component Analysis (PCA, k=3, 96.03% variance) benchmarked across 100 dynamic realizations demonstrates "
+    "that while load-compensated 1D voltage-residual EWMA detects incipient membrane dehydration with marginally lower latency (10.6 h vs. 11.6 h), PCA "
+    "provides unique multi-sensor root-cause diagnosis via contribution plots, isolating thermal-pressure anomalies (95.2% combined contribution) during "
+    "dehydration and overpotential-production anomalies during anodic flooding (100% detection rate)."
 )
 r_ab2.font.size = Pt(9)
 r_ab2.bold = True
@@ -252,13 +252,14 @@ add_body_p(
     "Hourly meteorological data spanning six complete years (2019–2024, N = 52,608 h) were extracted from the NASA POWER MERRA-2 "
     "archive [17]. We examine two distinct geographic corridors within Karnataka, India: (1) On-Site Coastal Corridor (13.3525°N, 74.7928°E) "
     "with GHI = 213.92 W/m², tilted POA irradiance = 220.59 W/m² (PV CF = 21.23%), and raw 100 m wind speed = 4.15 m/s (wind CF = 14.70%); "
-    "and (2) Inland Highland Wind Corridor (Chitradurga–Gadag, 14.225°N, 76.398°E) with 100 m wind speed = 6.69 m/s (delivered CF = 43.29% "
-    "after 3.4% transmission losses). Under KERC regulations [18], wheeling charges are INR 0.58/kWh.",
+    "and (2) Inland Highland Wind Corridor (Chitradurga–Gadag, 14.225°N, 76.398°E) with 100 m wind speed = 6.69 m/s. Standard IEC Class II "
+    "turbines (v_r ≈ 11.0 m/s) deliver 28–32% CUF in this region, whereas an IEC Class IIIB low-wind turbine (v_r = 8.4 m/s, Suzlon S144 / Vestas V120) "
+    "reaches 44.82% generation CF (delivered CF = 43.29% after 3.4% transmission losses). Under KERC Tariff Order S/01/2024 [18], wheeling charges are INR 0.58/kWh.",
     indent=False
 )
 add_fig(
     "fig1_coastal_meteo_and_pem_polarization.png",
-    "Fig. 1. (a) Seasonal complementarity across 6 years (2019–2024, 52,608 h) between coastal solar PV and open-access wheeled highland wind; (b) Calibrated PEMWE polarization curve against experimental data (75°C, 30 bar) with overpotential breakdown."
+    "Fig. 1. (a) Seasonal complementarity across 6 years (2019–2024, 52,608 h) between coastal solar PV and open-access wheeled highland wind; (b) Calibrated PEMWE polarization curve against semi-empirical literature benchmark (75°C, 30 bar) with overpotential breakdown."
 )
 
 add_subsec_heading("B. First-Principles High-Current PEMWE Formulation")
@@ -272,9 +273,9 @@ add_eq("V_cell = V_rev(T, P) + η_act(i, T) + η_ohm(i, T, λ) + η_conc(i, T)",
 add_eq("η_conc = -(RT/4F)ln(1 - i/i_L,an) - (RT/2F)ln(1 - i/i_L,cat) + β_bub · i^1.65", "2")
 add_eq("dV_deg/dt = 1.20 + 0.25 + 2.80 · max(0, i(t) - 1.80)^1.85 + 1.40 · |di/dt|   [μV/h]", "3")
 add_body_p(
-    "Model parameters were calibrated against N = 14 experimental data points from Bernt & Gasteiger [6] and Rakousky et al. [7] (75°C, 30 bar), "
-    "achieving RMSE = 3.10 mV, MAE = 3.01 mV, and R² = 0.99971. Catalytic recombination (η_recomb = 0.88) and i_min = 0.20 A/cm² limit anodic "
-    "H₂-in-O₂ to 1.64 mol% (<50% LEL trip limit)."
+    "Model parameters were calibrated against an assembled semi-empirical benchmark of N = 14 points derived from Bernt & Gasteiger [6] "
+    "and Rakousky et al. [7] (75°C, 30 bar), achieving RMSE = 3.10 mV, MAE = 3.01 mV, and R² = 0.99971. Catalytic recombination "
+    "(η_recomb = 0.88) and i_min = 0.20 A/cm² limit anodic H₂-in-O₂ to 1.64 mol% (<50% LEL trip limit)."
 )
 
 # Table 1 in docx
@@ -388,7 +389,7 @@ add_body_p(
 
 add_sec_heading("References")
 refs = [
-    "[1] Ministry of New and Renewable Energy (MNRE), National Green Hydrogen Mission. New Delhi, India: Government of India, Jan. 2023.",
+    "[1] Ministry of New and Renewable Energy (MNRE), National Green Hydrogen Mission. New Delhi, India: Government of India, Order No. 353/34/2022-NT, Jan. 2023.",
     "[2] N. K. Pujari, R. K. Inapakurthi, and K. Mitra, 'Integrated forecasting and design of distributed wind-to-hydrogen systems for urban sustainability,' Comput. Chem. Eng., vol. 211, p. 108842, Aug. 2026. DOI: 10.1016/j.compchemeng.2026.108842.",
     "[3] K. Mitra, R. Everson, and J. Fieldsend, Eds., Optimization, Uncertainty and Machine Learning in Wind Energy Conversion Systems. Cham: Springer Nature, Jan. 2025. DOI: 10.1007/978-3-031-72124-3.",
     "[4] Abhishek, N. K. Pujari, and K. Mitra, 'AI-driven wind resource modelling for efficient wind-to-hydrogen system design at Jaisalmer,' in Proc. Int. Conf. AI Manuf. Sustain. (AIMS), Dec. 2025, pp. 1–8.",
@@ -405,10 +406,12 @@ refs = [
     "[15] M. Madakyaru, C. N. Bhushan, and S. R. Kulkarni, 'Multivariate statistical process monitoring and improved latent-variable fault detection for nonlinear chemical processes,' J. Process Control, vol. 134, p. 103148, 2024. DOI: 10.1016/j.jprocont.2024.103148.",
     "[16] M. N. Nounou, B. R. Bakshi, P. K. Goel, and X. Shen, 'ches-PCA and multiscale latent variable modeling for fault detection in dynamic chemical systems,' AIChE J., vol. 48, no. 8, pp. 1775–1793, 2002. DOI: 10.1002/aic.690480816.",
     "[17] NASA POWER Project, 'Prediction of Worldwide Energy Resources (Hourly Agroclimatology & Solar-Wind Energy Archive, Karnataka Regional Corridors),' NASA, 2026.",
-    "[18] Karnataka Electricity Regulatory Commission (KERC), 'Terms and Conditions for Open Access and Renewable Wheeling Charges: Multi-Year Tariff Order,' Bengaluru, India, 2024.",
+    "[18] Karnataka Electricity Regulatory Commission (KERC), 'Terms and Conditions for Open Access and Renewable Wheeling Charges: Multi-Year Tariff Order,' Bengaluru, India, Tariff Order No. S/01/2024, 2024.",
     "[19] T. E. Springer, T. A. Zawodzinski, and S. Gottesfeld, 'Polymer electrolyte fuel cell model,' J. Electrochem. Soc., vol. 138, no. 8, pp. 2334–2342, Aug. 1991. DOI: 10.1149/1.2085971.",
     "[20] K. Deb, A. Pratap, S. Agarwal, and T. Meyarivan, 'A fast and elitist multiobjective genetic algorithm: NSGA-II,' IEEE Trans. Evol. Comput., vol. 6, no. 2, pp. 182–197, Apr. 2002. DOI: 10.1109/4235.996017.",
-    "[21] Central Electricity Authority (CEA), 'CO2 Baseline Database for the Indian Power Sector (User Guide Version 19.0),' Ministry of Power, New Delhi, India, 2024."
+    "[21] Central Electricity Authority (CEA), 'CO2 Baseline Database for the Indian Power Sector (User Guide Version 19.0),' Ministry of Power, New Delhi, India, Dec. 2024.",
+    "[22] Central Electricity Regulatory Commission (CERC), 'Terms and Conditions for Tariff determination from Renewable Energy Sources Regulations,' New Delhi, India, Notification No. RA-14026(11)/1/2023-CERC, 2023.",
+    "[23] International Renewable Energy Agency (IRENA), Green Hydrogen Cost Reduction: Scaling up Electrolysers to Meet the 1.5°C Climate Goal. Abu Dhabi, UAE: IRENA, Dec. 2020. ISBN: 978-92-9260-295-6."
 ]
 for ref in refs:
     p_r = doc.add_paragraph()
