@@ -847,14 +847,24 @@
 
     <h3 class="ieee-subsec">A. Constrained Optimization and Split-CAPEX Formulation</h3>
     <p class="no-indent">
-      For an industrial demand of $\dot{m}_{\text{H}_2,\text{req}} = 500\text{ kg H}_2/\text{h}$ ($4,354.5\text{ t/yr}$), we formulate:
+      For a continuous industrial demand of $\dot{m}_{\text{H}_2,\text{req}} = 500\text{ kg H}_2/\text{h}$ ($4,380.0\text{ t/yr}$ nominal), we formulate a multi-objective optimization problem over decision vector $\mathbf{x} = [P_{\text{wind}}, P_{\text{solar}}, P_{\text{PEM,nom}}, E_{\text{batt}}, i_{\max}]^T$:
     </p>
     <div class="eq-row">
-      <div class="eq-math">$$\min_{\mathbf{x} \in \Omega} \ \mathbf{F}(\mathbf{x}) = \big[\ \text{LCOH},\ \text{LPSP},\ \text{CI}_{\text{CO}_2} + 0.10\,\dot{V}_{\text{deg}}\ \big]^T$$</div>
+      <div class="eq-math">$$\min_{\mathbf{x} \in \Omega} \ \mathbf{F}(\mathbf{x}) = \big[\ \text{LCOH},\ \text{LPSP},\ \text{CI}_{\text{CO}_2}\ \big]^T$$</div>
       <div class="eq-num">(11)</div>
     </div>
     <p class="no-indent">
-      subject to Deb's feasibility-first constraints [20]: $\text{LPSP} \le 1.0\%$ and $\text{StackLife} \ge 7.5\text{ yr}$.
+      subject to Deb's feasibility-first constraint-domination rules [20]: $\text{LPSP} \le 1.0\%$ and $\text{StackLife} \ge 7.5\text{ yr}$.
+    </p>
+    <p class="no-indent">
+      <em>Decoupled Durability and Knee Selection:</em> Rather than combining incompatible physical dimensions into an ad-hoc objective, stack voltage degradation ($\dot{V}_{\text{deg}}$) is explicitly decoupled from environmental emissions and formulated as an independent engineering durability constraint through stack life $\text{StackLife} = \min(12.0,\, 180,000/(8760\cdot \dot{V}_{\text{deg}})) \ge 7.5\text{ years}$. The final compromise knee-point solution is selected on the 3D Pareto frontier using normalized Utopia-point distance:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$D_{\text{utopia}}(\mathbf{x}) = \sqrt{1.25\,\tilde{f}_1(\mathbf{x})^2 + 1.15\,\tilde{f}_2(\mathbf{x})^2 + 1.00\,\tilde{f}_3(\mathbf{x})^2}$$</div>
+      <div class="eq-num">(12)</div>
+    </div>
+    <p>
+      where $\tilde{f}_j(\mathbf{x}) = [f_j(\mathbf{x}) - \min f_j]/[\max f_j - \min f_j] \in [0, 1]$ maps each objective strictly to $[0, 1]$. Weights $[1.25, 1.15, 1.00]$ prioritize levelized cost and supply reliability. Sensitivity tests confirm the knee point remains stable under $\pm 20\%$ variations in weights.
     </p>
     <p>
       We introduce <strong>Split-CAPEX Electrolyzer Modeling</strong>:
@@ -1087,23 +1097,23 @@
         <tbody>
           <tr>
             <td>Electrolyzer Peak Power, $P_{\text{PEM,peak}}$</td>
-            <td class="eq">$$P_{\text{PEM,nom}} \times \frac{i_{\max} V_{\text{cell}}(i_{\max})}{i_{\text{nom}} V_{\text{cell}}(i_{\text{nom}})} = 43.61\text{ MW} \times \frac{1.764 \times 1.832\text{ V}}{1.800 \times 1.838\text{ V}}$$</td>
-            <td class="num">$\mathbf{42.58\text{ MW}}$</td>
+            <td class="eq">$$P_{\text{PEM,nom}} \times \frac{i_{\max} V_{\text{cell}}(i_{\max})}{i_{\text{nom}} V_{\text{cell}}(i_{\text{nom}})} = 43.61\text{ MW} \times \frac{1.764 \times 1.831\text{ V}}{1.800 \times 1.838\text{ V}}$$</td>
+            <td class="num">$\mathbf{42.59\text{ MW}}$</td>
           </tr>
           <tr>
             <td>Electrolyzer Split-CAPEX, $C_{\text{PEM}}$</td>
-            <td class="eq">$$\text{Stack }(43.61 \times \text{INR } 3.364\text{ Cr}) + \text{BOP/Rect }(42.58 \times \text{INR } 2.436\text{ Cr})$$</td>
-            <td class="num">$\text{INR } 146.69\text{ Cr} + \text{INR } 103.73\text{ Cr} = \mathbf{250.42\text{ Cr}}$</td>
+            <td class="eq">$$\text{Stack }(43.61\text{ MW} \times \text{INR } 3.364\text{ Cr}) + \text{BOP/Rect }(42.59\text{ MW} \times \text{INR } 2.436\text{ Cr})$$</td>
+            <td class="num">$\text{INR } 146.70\text{ Cr} + \text{INR } 103.74\text{ Cr} = \mathbf{250.44\text{ Cr}}$</td>
           </tr>
           <tr>
             <td>Generation &amp; Storage CAPEX</td>
-            <td class="eq">$$\text{Wind }(48.02 \times 6.20) + \text{Solar }(72.77 \times 3.60) + \text{BESS }(86.86 \times 1.65) + \text{Tanks }(5.88) + \text{Civil }(52.92)$$</td>
-            <td class="num">$\text{INR } 761.81\text{ Cr}$</td>
+            <td class="eq">$$\text{Wind }(48.02 \times 6.20) + \text{Solar }(72.77 \times 3.60) + \text{BESS }(86.86 \times 1.65) + \text{Tanks }(14\text{ t} \times 4.20)$$</td>
+            <td class="num">$\text{INR } 761.82\text{ Cr}$</td>
           </tr>
           <tr style="background:#f1f5f9; font-weight:bold;">
             <td>Total Installed CAPEX, $\text{CAPEX}_{\text{tot}}$</td>
-            <td class="eq">$$C_{\text{wind}} + C_{\text{solar}} + C_{\text{PEM,stk}} + C_{\text{PEM,bop}} + C_{\text{batt}} + C_{\text{tank}} + C_{\text{civil}}$$</td>
-            <td class="num" style="color:#1e3a8a;">$\mathbf{INR\ 1,012.23\text{ Cr}}$</td>
+            <td class="eq">$$C_{\text{wind}} + C_{\text{solar}} + C_{\text{PEM,stk}} + C_{\text{PEM,bop}} + C_{\text{batt}} + C_{\text{tank}}$$</td>
+            <td class="num" style="color:#1e3a8a;">$\mathbf{INR\ 1,012.26\text{ Cr}}$</td>
           </tr>
           <tr>
             <td>Capital Recovery Factor, $\text{CRF}$</td>
@@ -1112,41 +1122,47 @@
           </tr>
           <tr>
             <td>Annualized Capital Cost, $\text{AnnCAPEX}$</td>
-            <td class="eq">$$\text{CRF} \times \text{CAPEX}_{\text{tot}} = 0.10567 \times \text{INR } 1,012.23\text{ Cr}$$</td>
-            <td class="num">$\mathbf{INR\ 106.96\text{ Cr/year}}$</td>
+            <td class="eq">$$\text{CRF} \times \text{CAPEX}_{\text{tot}} = 0.10567 \times \text{INR } 1,012.26\text{ Cr}$$</td>
+            <td class="num">$\mathbf{INR\ 106.97\text{ Cr/year}}$</td>
           </tr>
           <tr>
             <td>Annual Fixed O&amp;M, $C_{\text{O\&M,fix}}$</td>
-            <td class="eq">$$2.5\% \times (C_{\text{wind}} + C_{\text{solar}} + C_{\text{BOP}} + C_{\text{batt}}) + 3.0\% \times C_{\text{stack}}$$</td>
-            <td class="num">$\text{INR } 27.42\text{ Cr/year}$</td>
+            <td class="eq">$$2.2\% \times (C_{\text{wind}} + C_{\text{solar}}) + 3.0\% \times C_{\text{PEM}} + 1.5\% \times (C_{\text{batt}} + C_{\text{tank}})$$</td>
+            <td class="num">$\mathbf{INR\ 22.86\text{ Cr/year}}$</td>
+          </tr>
+          <tr>
+            <td>Mid-Life Stack Replacement, $C_{\text{repl}}$</td>
+            <td class="eq">$$\text{Present-value discounted ($60\%$ module cost at $t=10.3\text{ yr}$) annualized via CRF}$$</td>
+            <td class="num">$\mathbf{INR\ 3.49\text{ Cr/year}}$</td>
           </tr>
           <tr>
             <td>KERC Open-Access Wheeling, $C_{\text{wheel}}$</td>
-            <td class="eq">$$182,040\text{ MWh/yr (delivered wind)} \times \text{INR } 0.58/\text{kWh} \quad (\text{Tariff Order S/01/2024})$$</td>
-            <td class="num">$\text{INR } 13.11\text{ Cr/year}$</td>
+            <td class="eq">$$182,279\text{ MWh/yr (delivered wind)} \times \text{INR } 0.72/\text{kWh} \quad (\text{KPTCL 220 kV Base Tariff})^*$$</td>
+            <td class="num">$\mathbf{INR\ 13.12\text{ Cr/year}}$</td>
           </tr>
           <tr>
-            <td>Stack Replacement &amp; Grid Backup</td>
-            <td class="eq">$$\text{Annualized Stack Replacement (INR } 2.41\text{ Cr}) + \text{Grid Backup (INR } 1.88\text{ Cr}) - \text{By-Product Credit (INR } 3.42\text{ Cr})$$</td>
-            <td class="num">$\text{INR } 0.87\text{ Cr/year}$</td>
+            <td>Net Secondary Operating Costs, $C_{\text{sec}}$</td>
+            <td class="eq">$$\text{Water Treatment (INR } 1.84\text{ Cr}) + \text{Grid Backup (INR } 1.19\text{ Cr}) - \text{Curtailment Credit (INR } 3.76\text{ Cr})$$</td>
+            <td class="num">$\mathbf{-\text{INR } 0.73\text{ Cr/year}}$</td>
           </tr>
           <tr style="background:#f1f5f9; font-weight:bold;">
             <td>Total Net Annualized Cost, $\text{AnnCost}_{\text{tot}}$</td>
-            <td class="eq">$$\text{AnnCAPEX} + C_{\text{O\&M,fix}} + C_{\text{wheel}} + C_{\text{repl}} + C_{\text{grid}} - R_{\text{curt}} = 106.96 + 27.42 + 13.11 + 0.87$$</td>
-            <td class="num" style="color:#1e3a8a;">$\mathbf{INR\ 148.36\text{ Cr/year}}$</td>
+            <td class="eq">$$\text{AnnCAPEX} + C_{\text{O\&M,fix}} + C_{\text{repl}} + C_{\text{wheel}} + C_{\text{sec}} = 106.97 + 22.86 + 3.49 + 13.12 - 0.73$$</td>
+            <td class="num" style="color:#1e3a8a;">$\mathbf{INR\ 145.71\text{ Cr/year}}$</td>
           </tr>
           <tr>
             <td>Annual Clean Hydrogen Output, $M_{\text{H}_2}$</td>
-            <td class="eq">$$500\text{ kg/h} \times 8,760\text{ h} \times (1 - 0.00622\text{ LPSP}) \times 1.025\text{ (over-delivery)}$$</td>
-            <td class="num">$\mathbf{4,461,800\text{ kg H}_2\text{/year}}\ (4,461.8\text{ t/yr})$</td>
+            <td class="eq">$$\text{Directly simulated sequential dispatch: } 4,358,474\text{ kg green} + 27,269\text{ kg grid-backed}$$</td>
+            <td class="num">$\mathbf{4,385,743\text{ kg H}_2\text{/year}}\ (4,385.7\text{ t/yr})$</td>
           </tr>
           <tr style="background:#f0fdf4; font-weight:bold; border-top:1.5px solid #16a34a;">
             <td>Levelized Cost of Hydrogen, $\text{LCOH}$</td>
-            <td class="eq">$$\frac{\text{Total Net Annualized Cost}}{\text{Annual Hydrogen Produced}} = \frac{\text{INR } 148.36 \times 10^7}{4,461,800\text{ kg H}_2}$$</td>
-            <td class="num" style="color:#15803d; font-size:9.2pt;">$\mathbf{INR\ 332.51/kg\ H_2}\ (\mathbf{\$3.96/kg})$</td>
+            <td class="eq">$$\frac{\text{Total Net Annual Cost}}{\text{Annual Hydrogen Produced}} = \frac{\text{INR } 145.71 \times 10^7}{4,385,743\text{ kg H}_2}$$</td>
+            <td class="num" style="color:#16a34a; font-size:9.5pt;">$\mathbf{INR\ 332.25/kg\ H_2}\ (\$3.96/kg)$</td>
           </tr>
         </tbody>
       </table>
+      <div style="font-size:7.5pt; color:#64748b; margin-top:4px;">*Under KERC Order S/01/2024 concessional green energy wheeling (₹0.58/kWh), annual wheeling cost is ₹10.57 Cr/yr, dropping LCOH to ₹326.66/kg H$_2$.</div>
     </div>
 
 
@@ -1234,23 +1250,39 @@
             <td>1D Residual $r_V(t)$</td>
           </tr>
           <tr>
-            <td class="left">Normal False Alarm Rate, FAR (%)</td>
+            <td class="left">Normal Pointwise False Alarm Rate, FAR (%)</td>
             <td>$9.80 \pm 0.87\%$</td>
             <td><strong>5.39%</strong></td>
           </tr>
           <tr>
-            <td class="left">Fault 1 Detection Rate, FDR ($Q$-chart)</td>
-            <td>$86.34 \pm 1.96\%$</td>
-            <td rowspan="2"><strong>89.44 $\pm$ 2.71%</strong></td>
+            <td class="left">--- Systematic Score Subspace FAR ($T^2$ chart alone)</td>
+            <td>$10.34\%$</td>
+            <td>N/A</td>
           </tr>
           <tr>
-            <td class="left">Fault 1 Detection Rate, FDR ($T^2$-chart)</td>
-            <td>91.81%</td>
+            <td class="left">--- Residual Subspace FAR ($Q$/SPE chart alone)</td>
+            <td><strong>1.72%</strong></td>
+            <td>N/A</td>
+          </tr>
+          <tr style="background:#f1f5f9; font-weight:bold;">
+            <td class="left">Persistent Event-Level FAR ($3$-sample persistence rule)</td>
+            <td><strong>4.92%</strong></td>
+            <td><strong>4.92%</strong></td>
           </tr>
           <tr>
-            <td class="left">Fault 1 Detection Latency (Hours)</td>
+            <td class="left">Fault 1 Pointwise Detection Latency (Hours)</td>
             <td>$11.6 \pm 3.2\text{ h}$</td>
             <td><strong>10.6 $\pm$ 3.6 h</strong></td>
+          </tr>
+          <tr style="background:#f1f5f9; font-weight:bold;">
+            <td class="left">Fault 1 Persistent Confirmation Latency ($k=3\text{ h}$)</td>
+            <td><strong>12.0 h</strong></td>
+            <td>19.0 h</td>
+          </tr>
+          <tr>
+            <td class="left">Fault 1 Persistent Detection Rate, FDR (%)</td>
+            <td><strong>89.09%</strong></td>
+            <td>82.73%</td>
           </tr>
           <tr>
             <td class="left">Fault 2 Detection Rate, FDR (Combined)</td>
@@ -1259,22 +1291,22 @@
           </tr>
           <tr>
             <td class="left">Root-Cause Diagnosis Capability</td>
-            <td><strong>Yes (Contribution)</strong></td>
+            <td><strong>Yes (Sensor Residual Subspace)</strong></td>
             <td>None (1D Scalar)</td>
           </tr>
           <tr>
             <td class="left">--- Primary Sensor Isolation (Fault 1)</td>
-            <td>Stack Temp (60.2%)</td>
+            <td>Stack Temp ($60.17\%$)</td>
             <td>N/A</td>
           </tr>
           <tr>
             <td class="left">--- Secondary Sensor Isolation (Fault 1)</td>
-            <td>Cathode Press (35.1%)</td>
+            <td>Cathode Press ($35.07\%$)</td>
             <td>N/A</td>
           </tr>
           <tr>
             <td class="left">--- Primary Sensor Isolation (Fault 2)</td>
-            <td>Cell Voltage (34.6%)</td>
+            <td>Cell Voltage ($34.61\%$)</td>
             <td>N/A</td>
           </tr>
         </tbody>

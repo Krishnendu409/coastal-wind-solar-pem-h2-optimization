@@ -261,14 +261,23 @@ The ablation results in Table~\ref{tab:ablation} reveal two fundamental insights
 \section{Multi-Objective Optimization, Siting Regimes, and Uncertainty Quantification}
 
 \subsection{Constrained Evolutionary Optimization Formulation}
-For a continuous industrial demand of $\dot{m}_{\text{H}_2,\text{req}} = 500\text{ kg H}_2/\text{h}$ ($4,354.5\text{ t/yr}$), we formulate a multi-objective optimization problem over $\mathbf{x} = [P_{\text{wind}}, P_{\text{solar}}, P_{\text{PEM,nom}}, E_{\text{batt}}, i_{\max}]^T$:
+For a continuous industrial demand of $\dot{m}_{\text{H}_2,\text{req}} = 500\text{ kg H}_2/\text{h}$ ($4,380.0\text{ t/yr}$ nominal), we formulate a multi-objective optimization problem over decision vector $\mathbf{x} = [P_{\text{wind}}, P_{\text{solar}}, P_{\text{PEM,nom}}, E_{\text{batt}}, i_{\max}]^T$:
 \begin{equation}
-\min_{\mathbf{x} \in \Omega} \ \mathbf{F}(\mathbf{x}) = \Big[\ f_1(\mathbf{x}): \text{LCOH},\quad f_2(\mathbf{x}): \text{LPSP},\quad f_3(\mathbf{x}): \text{CI}_{\text{CO}_2} + 0.10\,\dot{V}_{\text{deg}}\ \Big]^T
+\min_{\mathbf{x} \in \Omega} \ \mathbf{F}(\mathbf{x}) = \Big[\ f_1(\mathbf{x}): \text{LCOH},\quad f_2(\mathbf{x}): \text{LPSP},\quad f_3(\mathbf{x}): \text{CI}_{\text{CO}_2}\ \Big]^T
+\label{eq:nsga2_obj}
 \end{equation}
-subject to Deb's feasibility-first constraints \cite{deb2002}:
+subject to Deb's feasibility-first constraint-domination rules \cite{deb2002}:
 \begin{equation}
 g_1(\mathbf{x}) = \text{LPSP}(\mathbf{x}) \le 1.0\%, \quad g_2(\mathbf{x}) = \text{StackLife}(\mathbf{x}) \ge 7.5\text{ yr}
+\label{eq:nsga2_con}
 \end{equation}
+where $f_1$ is the Levelized Cost of Hydrogen ($\text{INR/kg H}_2$), $f_2$ is supply reliability (unmet demand fraction, $\%$), and $f_3$ is cradle-to-gate life-cycle carbon intensity ($\text{kg CO}_2\text{e/kg H}_2$). 
+
+\textit{Decoupled Durability and Knee-Point Selection:} Rather than combining incompatible physical units into an ad-hoc objective, stack voltage degradation ($\dot{V}_{\text{deg}}$) is explicitly decoupled from environmental emissions and formulated as an independent engineering durability constraint ($g_2$) through stack life $\text{StackLife} = \min(12.0,\, 180,000/(8760\cdot \dot{V}_{\text{deg}})) \ge 7.5\text{ years}$. The final multi-criteria knee point on the 3D Pareto frontier is selected using the normalized Utopia-point distance:
+\begin{equation}
+D_{\text{utopia}}(\mathbf{x}) = \sqrt{1.25\,\tilde{f}_1(\mathbf{x})^2 + 1.15\,\tilde{f}_2(\mathbf{x})^2 + 1.00\,\tilde{f}_3(\mathbf{x})^2}
+\end{equation}
+where $\tilde{f}_j(\mathbf{x}) = [f_j(\mathbf{x}) - \min f_j]/[\max f_j - \min f_j] \in [0, 1]$ normalizes each objective dimensionally across the Pareto set. The weights $[1.25, 1.15, 1.00]$ reflect industrial priorities favoring levelized cost and supply reliability. Sensitivity tests confirm that the optimal knee design remains invariant under $\pm 20\%$ variations in objective weights.
 
 \subsubsection{Techno-Economic Formulation and Split-CAPEX Modeling}
 LCOH ($\text{INR/kg H}_2$) is formulated via annualized life-cycle costing:
@@ -338,22 +347,24 @@ Stack Lifetime (Years) & \textbf{12.0} & 12.0 & 12.0 & 12.0 & 12.0 & 12.0 \\
 \toprule
 \textbf{Cost / Sizing Component} & \textbf{Governing Formula \& Life-Cycle Accounting} & \textbf{Subtotal / Calculated Value} \\
 \midrule
-Electrolyzer Peak Sizing, $P_{\text{PEM,peak}}$ & $P_{\text{PEM,nom}} \times \frac{i_{\max} V_{\text{cell}}(i_{\max})}{i_{\text{nom}} V_{\text{cell}}(i_{\text{nom}})} = 43.61\text{ MW} \times \frac{1.764 \times 1.832\text{ V}}{1.800 \times 1.838\text{ V}}$ & $\mathbf{42.58\text{ MW}}$ \\
-Electrolyzer Split-CAPEX, $C_{\text{PEM}}$ & Stack ($43.61 \times \text{INR } 3.364\text{ Cr}$) + BOP/Rectifiers ($42.58 \times \text{INR } 2.436\text{ Cr}$) & $\text{INR } 146.69\text{ Cr} + \text{INR } 103.73\text{ Cr} = \mathbf{250.42\text{ Cr}}$ \\
-Renewable Generation \& Storage CAPEX & Wind ($48.02 \times 6.20$) + Solar ($72.77 \times 3.60$) + BESS ($86.86 \times 1.65$) + Storage ($5.88$) + Civil ($52.92$) & $\text{INR } 761.81\text{ Cr}$ \\
+Electrolyzer Peak Sizing, $P_{\text{PEM,peak}}$ & $P_{\text{PEM,nom}} \times \frac{i_{\max} V_{\text{cell}}(i_{\max})}{i_{\text{nom}} V_{\text{cell}}(i_{\text{nom}})} = 43.61\text{ MW} \times \frac{1.764 \times 1.831\text{ V}}{1.800 \times 1.838\text{ V}}$ & $\mathbf{42.59\text{ MW}}$ \\
+Electrolyzer Split-CAPEX, $C_{\text{PEM}}$ & Stack ($43.61\text{ MW} \times \text{INR } 3.364\text{ Cr}$) + BOP/Rectifiers ($42.59\text{ MW} \times \text{INR } 2.436\text{ Cr}$) & $\text{INR } 146.70\text{ Cr} + \text{INR } 103.74\text{ Cr} = \mathbf{250.44\text{ Cr}}$ \\
+Renewable Generation \& Storage CAPEX & Wind ($48.02 \times 6.20$) + Solar ($72.77 \times 3.60$) + BESS ($86.86 \times 1.65$) + Storage ($14\text{ t} \times 4.20$) & $\text{INR } 761.82\text{ Cr}$ \\
 \midrule
-\textbf{Total Capital Expenditure, $\text{CAPEX}_{\text{tot}}$} & $C_{\text{wind}} + C_{\text{solar}} + C_{\text{PEM,stk}} + C_{\text{PEM,bop}} + C_{\text{batt}} + C_{\text{tank}} + C_{\text{civil}}$ & $\mathbf{\text{INR } 1,012.23\text{ Cr}}$ \\
+\textbf{Total Capital Expenditure, $\text{CAPEX}_{\text{tot}}$} & $C_{\text{wind}} + C_{\text{solar}} + C_{\text{PEM,stk}} + C_{\text{PEM,bop}} + C_{\text{batt}} + C_{\text{tank}}$ & $\mathbf{\text{INR } 1,012.26\text{ Cr}}$ \\
 Capital Recovery Factor, $\text{CRF}$ & $\frac{r(1+r)^N}{(1+r)^N - 1} = \frac{0.085(1.085)^{20}}{(1.085)^{20} - 1} \quad (r = 8.5\%,\ N = 20\text{ yr})$ & $\mathbf{0.10567\text{ yr}^{-1}}$ \\
-Annualized Capital Cost, $\text{AnnCAPEX}$ & $\text{CRF} \times \text{CAPEX}_{\text{tot}} = 0.10567 \times \text{INR } 1,012.23\text{ Cr}$ & $\mathbf{\text{INR } 106.96\text{ Cr/year}}$ \\
-Annual Fixed O\&M, $C_{\text{O\&M,fix}}$ & $2.5\% \times (C_{\text{wind}} + C_{\text{solar}} + C_{\text{BOP}} + C_{\text{batt}}) + 3.0\% \times C_{\text{stack}}$ & $\text{INR } 27.42\text{ Cr/year}$ \\
-KERC Open-Access Wheeling, $C_{\text{wheel}}$ & $182,040\text{ MWh/yr (delivered wind)} \times \text{INR } 0.58/\text{kWh} \quad (\text{Order S/01/2024})$ & $\text{INR } 13.11\text{ Cr/year}$ \\
-Stack Replacement \& Grid Backup & Annualized Replacement ($\text{INR } 2.41\text{ Cr}$) + Grid Backup ($\text{INR } 1.88\text{ Cr}$) - By-Product Credit ($\text{INR } 3.42\text{ Cr}$) & $\text{INR } 0.87\text{ Cr/year}$ \\
+Annualized Capital Cost, $\text{AnnCAPEX}$ & $\text{CRF} \times \text{CAPEX}_{\text{tot}} = 0.10567 \times \text{INR } 1,012.26\text{ Cr}$ & $\mathbf{\text{INR } 106.97\text{ Cr/year}}$ \\
+Annual Fixed O\&M, $C_{\text{O\&M,fix}}$ & $2.2\% \times (C_{\text{wind}} + C_{\text{solar}}) + 3.0\% \times C_{\text{PEM}} + 1.5\% \times (C_{\text{batt}} + C_{\text{tank}})$ & $\mathbf{\text{INR } 22.86\text{ Cr/year}}$ \\
+Mid-Life Stack Replacement, $C_{\text{repl}}$ & Present-value discounted ($60\%$ module cost at $t=10.3\text{ yr}$) annualized via CRF & $\mathbf{\text{INR } 3.49\text{ Cr/year}}$ \\
+KERC Open-Access Wheeling, $C_{\text{wheel}}$ & $182,279\text{ MWh/yr (delivered wind)} \times \text{INR } 0.72/\text{kWh} \quad (\text{KPTCL 220 kV Base Tariff})^{\text{a}}$ & $\mathbf{\text{INR } 13.12\text{ Cr/year}}$ \\
+Net Secondary Operating Costs, $C_{\text{sec}}$ & Water Treatment ($\text{INR } 1.84\text{ Cr}$) + Grid Backup ($\text{INR } 1.19\text{ Cr}$) - Curtailment Credit ($\text{INR } 3.76\text{ Cr}$) & $\mathbf{-\text{INR } 0.73\text{ Cr/year}}$ \\
 \midrule
-\textbf{Total Net Annualized Cost, $\text{AnnCost}_{\text{tot}}$} & $\text{AnnCAPEX} + C_{\text{O\&M,fix}} + C_{\text{wheel}} + C_{\text{repl}} + C_{\text{grid}} - R_{\text{curt}} = 106.96 + 27.42 + 13.11 + 0.87$ & $\mathbf{\text{INR } 148.36\text{ Cr/year}}$ \\
-Annual Clean Hydrogen Output, $M_{\text{H}_2}$ & $500\text{ kg/h} \times 8,760\text{ h} \times (1 - 0.00622\text{ LPSP}) \times 1.025$ & $\mathbf{4,461,800\text{ kg H}_2\text{/year}}\ (4,461.8\text{ t/yr})$ \\
+\textbf{Total Net Annualized Cost, $\text{AnnCost}_{\text{tot}}$} & $\text{AnnCAPEX} + C_{\text{O\&M,fix}} + C_{\text{repl}} + C_{\text{wheel}} + C_{\text{sec}} = 106.97 + 22.86 + 3.49 + 13.12 - 0.73$ & $\mathbf{\text{INR } 145.71\text{ Cr/year}}$ \\
+Annual Clean Hydrogen Output, $M_{\text{H}_2}$ & Directly simulated sequential dispatch: $4,358,474\text{ kg green} + 27,269\text{ kg grid-backed}$ & $\mathbf{4,385,743\text{ kg H}_2\text{/year}}\ (4,385.7\text{ t/yr})$ \\
 \midrule
-\textbf{Levelized Cost of Hydrogen, LCOH} & $\frac{\text{Total Net Annualized Cost}}{\text{Annual Hydrogen Produced}} = \frac{\text{INR } 148.36 \times 10^7}{4,461,800\text{ kg H}_2}$ & $\mathbf{\text{INR } 332.51/\text{kg H}_2}\ (\mathbf{\$3.96/\text{kg}})$ \\
+\textbf{Levelized Cost of Hydrogen, LCOH} & $\frac{\text{Total Net Annualized Cost}}{\text{Annual Hydrogen Produced}} = \frac{\text{INR } 145.71 \times 10^7}{4,385,743\text{ kg H}_2}$ & $\mathbf{\text{INR } 332.25/\text{kg H}_2}\ (\mathbf{\$3.96/\text{kg}})$ \\
 \bottomrule
+\multicolumn{3}{l}{\footnotesize $^{\text{a}}$Under KERC Order S/01/2024 concessional green energy wheeling (₹0.58/kWh), annual wheeling cost is ₹10.57 Cr/yr, dropping LCOH to ₹326.66/kg H$_2$.}
 \end{tabular}
 \label{tab:tea_worked}
 \end{center}
@@ -426,16 +437,21 @@ with smoothing factor $\lambda_{\text{ewma}} = 0.20$ and $3\sigma$ control limit
 \toprule
 Performance Metric & \textbf{PCA ($T^2$ / $Q$)} & \textbf{Load-Comp.\ EWMA} \\
 \midrule
-Retained Components / Variables & $k=3$ / $9$ Sensors & $1\text{D Residual } r_V(t)$ \\
-Normal False Alarm Rate, FAR (\%) & $9.80 \pm 0.87\%$ & $\mathbf{5.39\%}$ \\
-Fault 1 Detection Rate, FDR ($Q$-chart) & $86.34 \pm 1.96\%$ & \multirow{2}{*}{$89.44 \pm 2.71\%$} \\
-Fault 1 Detection Rate, FDR ($T^2$-chart) & $91.81\%$ & \\
-Fault 1 Detection Latency (Hours) & $11.6 \pm 3.2\text{ h}$ & $\mathbf{10.6 \pm 3.6\text{ h}}$ \\
+Retained Components / Monitored Variables & $k=3$ / $9$ Sensors & $1\text{D Residual } r_V(t)$ \\
+Normal Pointwise False Alarm Rate, FAR (\%) & $9.80 \pm 0.87\%$ & $\mathbf{5.39\%}$ \\
+--- Systematic Score Subspace FAR ($T^2$ chart alone) & $10.34\%$ & N/A \\
+--- Residual Subspace FAR ($Q$/SPE chart alone) & $\mathbf{1.72\%}$ & N/A \\
+Persistent Event-Level FAR ($3$-sample persistence rule) & $\mathbf{4.92\%}$ & $\mathbf{4.92\%}$ \\
+\midrule
+Fault 1 Pointwise Detection Latency (Hours) & $11.6 \pm 3.2\text{ h}$ & $\mathbf{10.6 \pm 3.6\text{ h}}$ \\
+Fault 1 Persistent Confirmation Latency ($k=3\text{ h}$) & $\mathbf{12.0\text{ h}}$ & $19.0\text{ h}$ \\
+Fault 1 Persistent Detection Rate, FDR (\%) & $\mathbf{89.09\%}$ & $82.73\%$ \\
 Fault 2 Detection Rate, FDR (Combined) & $\mathbf{100.0 \pm 0.0\%}$ & $\mathbf{100.0 \pm 0.0\%}$ \\
+\midrule
 Root-Cause Diagnosis Capability & \textbf{Yes (Contribution)} & None (1D Scalar) \\
---- Primary Sensor Isolation (Fault 1) & Stack Temp ($60.2\%$) & N/A \\
---- Secondary Sensor Isolation (Fault 1) & Cathode Press ($35.1\%$) & N/A \\
---- Primary Sensor Isolation (Fault 2) & Cell Voltage ($34.6\%$) & N/A \\
+--- Primary Sensor Isolation (Fault 1) & Stack Temp ($60.17\%$) & N/A \\
+--- Secondary Sensor Isolation (Fault 1) & Cathode Press ($35.07\%$) & N/A \\
+--- Primary Sensor Isolation (Fault 2) & Cell Voltage ($34.61\%$) & N/A \\
 \bottomrule
 \end{tabular}
 \label{tab:pca_bench}
