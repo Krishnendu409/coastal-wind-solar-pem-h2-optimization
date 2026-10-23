@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Physics-Guided Surrogate Optimization and Load-Compensated Multivariate Fault Monitoring of a Coastal Hybrid Wind–Solar–PEM Green Hydrogen Plant under Multi-Year Meteorological Uncertainty</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+<style>
+  @page {
+    size: letter portrait;
+    margin: 0.75in 0.625in 0.85in 0.625in;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: "Times New Roman", Times, Georgia, serif;
+    font-size: 10pt;
+    line-height: 1.18;
+    color: #000000;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .page-container {
+    width: 7.25in;
+    margin: 0 auto;
+  }
+  /* IEEE Conference Top Banner */
+  .ieee-conf-header {
+    font-size: 7.5pt;
+    text-align: center;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: #222;
+    border-bottom: 0.5pt solid #444;
+    padding-bottom: 3px;
+    margin-bottom: 10px;
+  }
+  /* IEEE 24pt Title */
+  .ieee-title {
+    font-size: 20pt;
+    font-weight: normal;
+    line-height: 1.15;
+    text-align: center;
+    margin: 0 0 12px 0;
+    padding: 0 6px;
+  }
+  /* IEEE Author Block */
+  .ieee-authors {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    text-align: center;
+    gap: 24px;
+  }
+  .author-col {
+    flex: 1;
+    max-width: 3.4in;
+  }
+  .author-name {
+    font-size: 11pt;
+    font-weight: normal;
+    margin-bottom: 2px;
+  }
+  .author-affil {
+    font-size: 9.5pt;
+    font-style: italic;
+    line-height: 1.2;
+  }
+  .author-loc {
+    font-size: 9.5pt;
+    font-style: normal;
+    line-height: 1.2;
+  }
+  /* Two-Column Body */
+  .ieee-two-col {
+    column-count: 2;
+    column-gap: 0.25in;
+    column-fill: balance;
+    text-align: justify;
+    hyphens: auto;
+  }
+  p {
+    margin: 0;
+    text-indent: 0.15in;
+    margin-bottom: 3px;
+  }
+  p.no-indent {
+    text-indent: 0;
+  }
+  /* IEEE Abstract & Index Terms (9pt Bold) */
+  .ieee-abstract {
+    font-size: 9pt;
+    font-weight: bold;
+    line-height: 1.18;
+    text-indent: 0.15in;
+    margin-bottom: 6px;
+  }
+  .ieee-abstract em, .ieee-keywords em {
+    font-style: italic;
+    font-weight: bold;
+  }
+  .ieee-keywords {
+    font-size: 9pt;
+    font-weight: bold;
+    line-height: 1.18;
+    text-indent: 0.15in;
+    margin-bottom: 10px;
+  }
+  /* IEEE Drop Cap (\IEEEPARstart) */
+  .drop-cap {
+    float: left;
+    font-size: 27pt;
+    line-height: 0.82;
+    padding-top: 2px;
+    padding-right: 3px;
+    padding-bottom: 0;
+    font-weight: normal;
+  }
+  .drop-cap-rest {
+    text-transform: uppercase;
+    font-size: 8.5pt;
+    letter-spacing: 0.3px;
+  }
+  /* IEEE Section Headings */
+  h2.ieee-sec {
+    font-size: 10pt;
+    font-weight: normal;
+    font-variant: small-caps;
+    text-align: center;
+    margin: 10px 0 4px 0;
+    break-after: avoid;
+    letter-spacing: 0.3px;
+  }
+  h3.ieee-subsec {
+    font-size: 10pt;
+    font-weight: normal;
+    font-style: italic;
+    text-align: left;
+    margin: 7px 0 3px 0;
+    break-after: avoid;
+  }
+  .ieee-subsubsec {
+    font-style: italic;
+    font-weight: bold;
+  }
+  /* Equations with Right-Aligned Numbering */
+  .eq-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 4px 0;
+    font-size: 9.2pt;
+    break-inside: avoid;
+  }
+  .eq-math {
+    flex: 1;
+    text-align: center;
+    overflow-x: hidden;
+  }
+  .eq-num {
+    font-size: 9.5pt;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+  /* Figures (Caption Below, 8pt) */
+  .ieee-fig {
+    margin: 7px 0;
+    break-inside: avoid;
+    text-align: center;
+  }
+  .ieee-fig img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto 3px auto;
+    border: 0.3pt solid #ddd;
+  }
+  .ieee-fig-cap {
+    font-size: 8pt;
+    line-height: 1.15;
+    text-align: justify;
+  }
+  /* Tables (Caption Above, Centered Small Caps, 8pt) */
+  .ieee-table-wrap {
+    margin: 7px 0;
+    break-inside: avoid;
+  }
+  .ieee-table-wrap.span-all {
+    column-span: all;
+    margin: 10px 0;
+  }
+  .ieee-tab-num {
+    font-size: 8pt;
+    text-align: center;
+    letter-spacing: 0.5px;
+    margin-bottom: 1px;
+  }
+  .ieee-tab-title {
+    font-size: 8pt;
+    font-variant: small-caps;
+    text-align: center;
+    margin-bottom: 4px;
+    line-height: 1.15;
+  }
+  table.ieee-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.4pt;
+    line-height: 1.15;
+    border-top: 1.2pt solid #000;
+    border-bottom: 1.2pt solid #000;
+  }
+  table.ieee-table th {
+    border-bottom: 0.6pt solid #000;
+    padding: 3px 2px;
+    font-weight: normal;
+    text-align: center;
+  }
+  table.ieee-table td {
+    padding: 2.5px 2px;
+    text-align: center;
+  }
+  table.ieee-table td.left, table.ieee-table th.left {
+    text-align: left;
+  }
+  .tab-fn {
+    font-size: 7.0pt;
+    text-align: left;
+    margin-top: 2px;
+  }
+  /* Lists */
+  ol.ieee-list, ul.ieee-list {
+    margin: 3px 0 4px 0;
+    padding-left: 0.22in;
+  }
+  ol.ieee-list li, ul.ieee-list li {
+    margin-bottom: 2px;
+    text-align: justify;
+  }
+  /* References (8pt with hanging bracket) */
+  .ieee-refs {
+    font-size: 8pt;
+    line-height: 1.16;
+  }
+  .ref-item {
+    display: flex;
+    margin-bottom: 3px;
+    text-align: justify;
+  }
+  .ref-tag {
+    min-width: 0.22in;
+    flex-shrink: 0;
+  }
+  .ref-text {
+    flex: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-container">
+
+  <!-- IEEE Conference Banner -->
+  <div class="ieee-conf-header">
+    2026 National Conference on Artificial Intelligence, Sustainable Processes, Innovation & Renewable Energy (CHEMIGNITE / ASPIRE 2026) &bull; MIT Manipal
+  </div>
+
+  <!-- Title -->
+  <h1 class="ieee-title">
+    Physics-Guided Surrogate Optimization and Load-Compensated Multivariate Fault Monitoring of a Coastal Hybrid Wind–Solar–PEM Green Hydrogen Plant under Multi-Year Meteorological Uncertainty
+  </h1>
+
+  <!-- Author Block -->
+  <div class="ieee-authors">
+    <div class="author-col">
+      <div class="author-name">Krishnendu</div>
+      <div class="author-affil">Department of Computer Science and Engineering</div>
+      <div class="author-affil">Manipal Institute of Technology (MIT)</div>
+      <div class="author-affil">Manipal Academy of Higher Education (MAHE)</div>
+      <div class="author-loc">Manipal, Karnataka 576104, India</div>
+    </div>
+    <div class="author-col">
+      <div class="author-name">Arav Aggarwal</div>
+      <div class="author-affil">Department of Civil Engineering, School of Civil &amp; Chemical Engineering</div>
+      <div class="author-affil">Manipal Institute of Technology (MIT)</div>
+      <div class="author-affil">Manipal Academy of Higher Education (MAHE)</div>
+      <div class="author-loc">Manipal, Karnataka 576104, India</div>
+    </div>
+  </div>
+
+  <!-- Two-Column Body -->
+  <div class="ieee-two-col">
+
+    <!-- Abstract -->
+    <div class="ieee-abstract">
+      <em>Abstract</em>—Decarbonizing heavy coastal industries—such as petroleum refining, nitrogenous fertilizers, and port logistics in southwestern India—requires continuous, cost-effective green hydrogen ($\text{H}_2$) supply under severe seasonal weather variability. In this work, we investigate a $500\text{ kg H}_2/\text{h}$ ($4,355\text{ t/yr}$) hybrid wind–solar proton exchange membrane water electrolysis (PEMWE) facility through an audited, multi-year Process Systems Engineering (PSE) and physics-guided machine learning framework. First, analysis of six contiguous years ($2019$–$2024$, $52,608$ hourly observations) of uninflated NASA POWER MERRA-2 meteorological data demonstrates that local coastal wind in the Udupi–Mangalore corridor ($13.35^\circ\text{N}, 74.79^\circ\text{E}$) yields a low capacity factor ($\overline{\text{CF}} = 14.70\%$), whereas open-access wheeled wind from the Chitradurga–Gadag highland corridor ($14.23^\circ\text{N}, 76.40^\circ\text{E}$, delivered $\overline{\text{CF}} = 43.29\%$) achieves strong seasonal complementarity with on-site coastal solar PV ($\overline{\text{CF}} = 21.23\%$). Second, a first-principles high-current PEMWE model calibrated against published experimental data ($14$ points, Nafion 115, $75^\circ\text{C}$, $30\text{ bar}$, $\text{RMSE} = 3.10\text{ mV}$, $R^2 = 0.99971$) is coupled with catalytic recombination to guarantee anodic $\text{H}_2$-in-$\text{O}_2 \le 1.64\text{ mol\%}$ ($&lt;50\%$ of lower explosion limit) at turndown ($i_{\min} = 0.20\text{ A/cm}^2$). Third, a strictly leak-free $2 \times 5$ surrogate ablation establishes that a compact physics-guided Multi-Layer Perceptron (<strong>Green-MLP</strong>, $4,612$ parameters) achieves $5$-fold cross-validation $R^2 = 0.9943 \pm 0.0031$ ($R^2 = 0.9982$ on LCOH, $\text{RMSE} = \text{INR } 1.66 \pm 0.51/\text{kg}$) with an $89.94\%$ FLOP reduction over regularized deep networks and a $4,206\times$ inference acceleration over Numba-accelerated $52,608$-hour simulations. Fourth, a $5$-seed constrained NSGA-II optimization with split-CAPEX modeling reveals a critical trade-off: dynamic current overload ($i_{\max} &gt; 1.80\text{ A/cm}^2$) does not decrease Levelized Cost of Hydrogen (LCOH) because balance-of-plant (BOP) and rectifier capital costs scale with peak megawatt capacity, favoring a knee-point design ($48.02\text{ MW}$ wind, $72.77\text{ MW}$ solar, $43.61\text{ MW}$ nominal PEM at $i_{\max}^* = 1.764\text{ A/cm}^2$, $86.86\text{ MWh}$ battery) delivering $\text{LCOH} = \text{INR } 332.51/\text{kg H}_2$ ($&dollar;3.96/\text{kg}$), $\text{LPSP} = 0.62\%$, and $12.0$-year stack lifetime. Wheeled highland wind lowers LCOH by $12.96\%$ relative to an optimized pure coastal hybrid plant ($\text{INR } 382.04/\text{kg}$) and avoids severe supply failure ($\text{LPSP} = 21.30\%$) if identical hardware operates solely on coastal wind. Finally, a $9$-sensor latent-variable Principal Component Analysis (PCA, $k=3$, $96.03\%$ variance) benchmarked across $100$ dynamic realizations demonstrates that while load-compensated 1D voltage-residual EWMA detects incipient membrane dehydration with marginally lower latency ($10.6\text{ h}$ vs.\ $11.6\text{ h}$), PCA provides unique multi-sensor root-cause diagnosis via contribution plots, isolating thermal-pressure anomalies ($95.2\%$ combined contribution) during dehydration and overpotential-production anomalies during anodic flooding ($100\%$ detection rate).
+    </div>
+
+    <!-- Keywords -->
+    <div class="ieee-keywords">
+      <em>Index Terms</em>—Explainable AI (XAI), green deep learning, green hydrogen, multi-objective optimization (NSGA-II), multi-year meteorological uncertainty, multivariate statistical process monitoring (PCA), PEM water electrolysis, techno-economic analysis.
+    </div>
+
+    <!-- Section I: Introduction -->
+    <h2 class="ieee-sec">I. Introduction</h2>
+    <p class="no-indent">
+      <span class="drop-cap">T</span><span class="drop-cap-rest">he</span> National Green Hydrogen Mission of India mandates the production of $5\text{ MMT/yr}$ of green hydrogen by 2030 to substitute fossil-derived grey hydrogen across petroleum refining, ammonia-based nitrogenous fertilizers, and steelmaking [1]. Heavy chemical complexes in coastal Karnataka—such as Mangalore Refinery and Petrochemicals Limited (MRPL) and Mangalore Chemicals &amp; Fertilizers (MCF)—represent substantial concentrated hydrogen demands ($&gt;100\text{ t/day}$). Siting green hydrogen facilities within coastal industrial corridors offers immediate proximity to off-takers, port bunkering terminals, and abundant seawater desalination potential [2].
+    </p>
+    <p>
+      However, powering large-scale water electrolysis exclusively from on-site variable renewable energy (VRE) encounters severe techno-economic hurdles in tropical coastal regions. Tropical monsoon climates experience extreme seasonal weather shifts: solar irradiance drops precipitously during the four-month Southwest Monsoon (June–September) under dense cloud cover, whereas coastal surface winds often remain inadequate to sustain baseload multi-megawatt electrolysis throughout the remainder of the year [3], [4].
+    </p>
+    <p>
+      Recent chemical engineering and energy systems literature has focused on three core engineering strategies to address these challenges:
+    </p>
+    <ol class="ieee-list">
+      <li><em>High-Current-Density Proton Exchange Membrane Water Electrolysis (PEMWE):</em> Operating PEMWE stacks at elevated current densities ($i &gt; 1.8\text{ A/cm}^2$, up to $3.5\text{ A/cm}^2$) increases hydrogen generation per unit active cell area, theoretically reducing stack capital expenditure (CAPEX) [5]. However, high-current operation intensifies two-phase oxygen bubble crowding within the porous transport layer (PTL), accelerates membrane-electrode assembly (MEA) ohmic dissipation, and exacerbates catalyst dissolution under dynamic load ramping [6]–[8]. Moreover, safe turndown is constrained by pressurized hydrogen-in-oxygen gas crossover, which risks exceeding the lower explosion limit ($4.0\text{ mol\%}$) at low current densities [9].</li>
+      <li><em>Physics-Guided Surrogate-Assisted Optimization:</em> Sizing multi-carrier energy systems across multi-year meteorological time series ($&gt;50,000$ hourly steps) requires tens of thousands of dynamic dispatch evaluations during evolutionary optimization [10]. While deep neural networks have been applied as surrogate models, unconstrained black-box networks often violate physical laws, require massive parameter counts, and risk severe training energy footprints [11]. Domain-informed "Green AI" architectures that enforce physical scaling laws offer a path toward computationally lean, leak-free design optimization [2], [12].</li>
+      <li><em>Multivariate Statistical Process Monitoring (MSPM):</em> Under fluctuating renewable power inputs, standard univariate threshold alarms (e.g., cell voltage limits) fail because operational voltages dynamically vary with current density [13]. Latent-variable statistical techniques, pioneered in chemical process monitoring by Jackson and Mudholkar [14] and extended to nonlinear energy systems by Madakyaru and co-workers [15], [16], utilize Principal Component Analysis (PCA) with Hotelling's $T^2$ and Squared Prediction Error ($\text{SPE}/Q$) to decouple normal load swings from internal electrochemical faults such as membrane dehydration and PTL flooding.</li>
+    </ol>
+    <p>
+      Despite these individual developments, previous studies have suffered from significant critical limitations. First, simulation studies frequently evaluate green hydrogen plants over a single synthesized reference year, obscuring inter-annual climate variability and extreme seasonal droughts. Second, many models rely on uncalibrated polarization equations or omit balance-of-plant (BOP) cost scaling under peak current overloads. Third, surrogate models in prior literature have occasionally suffered from target leakage (injecting economic weighting directly into input features), confounding the true scientific value of physics guidance. Fourth, process monitoring benchmarks have often evaluated fault detection against uncompensated static voltage thresholds rather than realistic load-compensated dynamical baselines.
+    </p>
+    <p>
+      This paper addresses these issues by formulating and testing three central research questions (RQs):
+    </p>
+    <ul class="ieee-list">
+      <li><strong>RQ1 (Electrochemical and Regional Economic Trade-off):</strong> How does dynamic high-current overload ($i_{\max} &gt; 1.80\text{ A/cm}^2$) impact LCOH when power electronics and BOP capital costs are rigorously scaled with peak capacity, and how does uninflated on-site coastal wind compare against open-access wheeled highland wind across a 6-year meteorological record?</li>
+      <li><strong>RQ2 (Surrogate Generalization and Computational Efficiency):</strong> Can a strictly leak-free, physics-guided compact neural surrogate preserve Pareto ranking ($\rho &gt; 0.99$) and accelerate 6-year multi-objective evolutionary optimization without over-parameterized deep neural networks?</li>
+      <li><strong>RQ3 (Multivariate Process Monitoring Benchmark):</strong> Under realistic renewable dispatch trajectories, does latent-variable PCA provide an early warning lead time or superior diagnostic root-cause isolation compared to a load-compensated 1D voltage-residual EWMA control chart across repeated Monte Carlo fault realizations?</li>
+    </ul>
+
+    <!-- Section II: Meteorology & PEMWE -->
+    <h2 class="ieee-sec">II. Regional Meteorology, Siting, and Calibrated First-Principles Electrochemistry</h2>
+
+    <h3 class="ieee-subsec">A. Multi-Year Meteorological Analysis and Regional Siting</h3>
+    <p class="no-indent">
+      To avoid the risks of single-year climatological anomalies, hourly meteorological data spanning six complete years ($2019$–$2024$, $N = 52,608\text{ h}$) were extracted from the NASA Prediction of Worldwide Energy Resources (POWER) MERRA-2 assimilation dataset [17]. We examine two distinct geographic corridors within Karnataka, India:
+    </p>
+    <ul class="ieee-list">
+      <li><em>Corridor 1 (On-Site Coastal Industrial Corridor):</em> Located at the coastal plain of Udupi–Manipal–Mangalore ($13.3525^\circ\text{N}, 74.7928^\circ\text{E}$), adjacent to industrial off-takers. Across the 6-year baseline, the mean global horizontal irradiance (GHI) is $213.92\text{ W/m}^2$. Applying an isotropic Liu–Jordan transposition model for fixed latitude-tilt arrays ($\beta = 13.4^\circ\text{S}$) with ground albedo $\rho_g = 0.20$ yields an annual mean plane-of-array (POA) irradiance of $G_{\text{poa}} = 220.59\text{ W/m}^2$, corresponding to an annual solar PV capacity factor of $\overline{\text{CF}}_{\text{solar}} = 21.23\%$ (summer peak of $24.82\%$). However, raw $100\text{ m}$ hub-height wind speed (evaluated using hourly dynamic power-law shear $\alpha(t) = \ln[v_{50}(t)/v_{10}(t)]/\ln(50/10)$ without empirical multiplier, $f_{\text{wind}} = 1.0$) averages only $4.15\text{ m/s}$, delivering an annual wind capacity factor of $\overline{\text{CF}}_{\text{wind,coastal}} = 14.70\%$ for an IEC Class IIIB turbine ($v_{\text{ci}} = 2.5\text{ m/s}, v_r = 8.4\text{ m/s}, v_{\text{co}} = 25.0\text{ m/s}$).</li>
+      <li><em>Corridor 2 (Inland Highland Wind Corridor):</em> Located in the Chitradurga–Gadag semi-arid wind corridor ($14.225^\circ\text{N}, 76.398^\circ\text{E}$), where $100\text{ m}$ hub-height wind speeds average $6.69\text{ m/s}$, delivering an annual generation capacity factor of $44.82\%$ ($60.99\%$ during the monsoon). Wheeling this power to the coastal plant via the Karnataka State Transmission Utility (KPTCL) $220\text{ kV}$ extra-high tension (EHT) network entails an average technical transmission loss of $3.40\%$, yielding an effective delivered capacity factor of $\overline{\text{CF}}_{\text{wind,delivered}} = 43.29\%$. Under prevailing Karnataka Electricity Regulatory Commission (KERC) Open Access Regulations [18], green open-access wheeling and transmission charges are set at $\text{INR } 0.58/\text{kWh}$.</li>
+    </ul>
+
+    <!-- Figure 1 -->
+    <div class="ieee-fig">
+      <img src="figures/fig1_coastal_meteo_and_pem_polarization.png" alt="Meteorology and PEM Polarization">
+      <div class="ieee-fig-cap">
+        Fig. 1. (a) Seasonal complementarity across 6 years ($2019$–$2024$, $52,608\text{ h}$) between coastal solar PV and open-access wheeled highland wind; (b) Calibrated PEMWE polarization curve against experimental data ($75^\circ\text{C}, 30\text{ bar}$) with overpotential breakdown.
+      </div>
+    </div>
+
+    <p>
+      Fig. 1(a) illustrates the strong negative seasonal covariance between solar PV and highland wind. During the Southwest Monsoon (June–September), when coastal solar PV capacity factors drop to $16.2\%$, highland wind generation surges to $60.99\%$, providing an ideal natural hedge for baseload hydrogen synthesis.
+    </p>
+
+    <h3 class="ieee-subsec">B. First-Principles High-Current PEMWE Formulation</h3>
+    <p class="no-indent">
+      Extending the electrochemical framework of Masampally, Mitra, and Runkana [5] and Springer <em>et al.</em> [19], the single-cell operating potential $V_{\text{cell}}(i, T, P)$ at current density $i$ ($0.05$–$3.50\text{ A/cm}^2$), stack temperature $T = 348.15\text{ K}$ ($75^\circ\text{C}$), cathode pressure $P_{\text{cat}} = 30\text{ bar}$, and anode pressure $P_{\text{an}} = 1.0\text{ bar}$ is decomposed as:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$V_{\text{cell}} = V_{\text{rev}}(T, P) + \eta_{\text{act}}(i, T) + \eta_{\text{ohm}}(i, T, \lambda) + \eta_{\text{conc}}(i, T)$$</div>
+      <div class="eq-num">(1)</div>
+    </div>
+
+    <p class="no-indent">
+      <span class="ieee-subsubsec">Thermodynamic Reversible Potential:</span> Using the temperature-dependent standard reversible potential with liquid-water entropy change ($dE^\circ/dT = -0.846\text{ mV/K}$) and Antoine saturation vapor pressure $P_{\text{H}_2\text{O}}^{\text{sat}}(75^\circ\text{C}) = 0.3846\text{ bar}$:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$V_{\text{rev}} = E^\circ(T) + \frac{RT}{2F}\ln\!\left[\frac{(P_{\text{cat}} - P_{\text{H}_2\text{O}}^{\text{sat}})\,(P_{\text{an}} - P_{\text{H}_2\text{O}}^{\text{sat}})^{0.5}}{a_{\text{H}_2\text{O}}}\right]$$</div>
+      <div class="eq-num">(2)</div>
+    </div>
+    <p class="no-indent">
+      yielding $V_{\text{rev}} = 1.234\text{ V}$ at $75^\circ\text{C}$ and $30\text{ bar}$ cathode pressure ($1.0\text{ bar}$ anode pressure).
+    </p>
+
+    <p class="no-indent">
+      <span class="ieee-subsubsec">Activation and Ohmic Overpotentials:</span> Anodic oxygen evolution reaction (OER on $\text{IrO}_2$) and cathodic hydrogen evolution reaction (HER on $\text{Pt/C}$) overpotentials follow the hyperbolic inverse-sine Butler–Volmer relation:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$\eta_{\text{act}} = \frac{RT}{2\alpha_{\text{an}} F}\text{arcsinh}\!\left(\frac{i}{2 i_{0,\text{an}}(T)}\right) + \frac{RT}{2\alpha_{\text{cat}} F}\text{arcsinh}\!\left(\frac{i}{2 i_{0,\text{cat}}(T)}\right)$$</div>
+      <div class="eq-num">(3)</div>
+    </div>
+    <p class="no-indent">
+      where exchange current densities obey Arrhenius temperature scaling:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$i_{0,r}(T) = i_{0,r}^{\text{ref}}\exp\!\left[\frac{E_{a,r}}{R}\left(\frac{1}{T_{\text{ref}}} - \frac{1}{T}\right)\right]$$</div>
+      <div class="eq-num">(4)</div>
+    </div>
+    <p class="no-indent">
+      with $T_{\text{ref}} = 333.15\text{ K}$, $i_{0,\text{an}}^{\text{ref}} = 2.2 \times 10^{-5}\text{ A/cm}^2$ ($E_{a,\text{an}} = 42\text{ kJ/mol}$), and $i_{0,\text{cat}}^{\text{ref}} = 2.5 \times 10^{-2}\text{ A/cm}^2$ ($E_{a,\text{cat}} = 16\text{ kJ/mol}$).
+    </p>
+    <p>
+      For a Nafion 115 membrane ($\delta_{\text{mem}} = 127\ \mu\text{m}$) at full hydration ($\lambda = 18.5\text{ mol H}_2\text{O/mol SO}_3^-$) and electronic contact resistance $R_{\text{elec}} = 0.032\ \Omega\cdot\text{cm}^2$, ionic conductivity $\sigma_{\text{mem}}$ and ohmic loss $\eta_{\text{ohm}}$ are:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$\sigma_{\text{mem}}(\lambda, T) = (0.005139\lambda - 0.00326)\exp\!\left[1268\left(\frac{1}{303.15} - \frac{1}{T}\right)\right]$$</div>
+      <div class="eq-num">(5)</div>
+    </div>
+    <div class="eq-row">
+      <div class="eq-math">$$\eta_{\text{ohm}}(i, T, \lambda) = i\left(\frac{\delta_{\text{mem}}}{\sigma_{\text{mem}}(\lambda, T)} + R_{\text{elec}}\right)$$</div>
+      <div class="eq-num">(6)</div>
+    </div>
+
+    <p class="no-indent">
+      <span class="ieee-subsubsec">Concentration and Bubble Overpotential:</span> At elevated current densities, two-phase bubble crowding within the porous transport layer (PTL) limits mass transport:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$\eta_{\text{conc}} = -\frac{RT}{4F}\ln\!\left(1 - \frac{i}{i_{L,\text{an}}}\right) - \frac{RT}{2F}\ln\!\left(1 - \frac{i}{i_{L,\text{cat}}}\right) + \beta_{\text{bub}}\, i^{1.65}$$</div>
+      <div class="eq-num">(7)</div>
+    </div>
+    <p class="no-indent">
+      with $i_{L,\text{an}} = 4.2\text{ A/cm}^2$, $i_{L,\text{cat}} = 6.0\text{ A/cm}^2$, and $\beta_{\text{bub}} = 0.014\text{ V}\cdot\text{cm}^{3.3}/\text{A}^{1.65}$.
+    </p>
+
+    <p class="no-indent">
+      <span class="ieee-subsubsec">Experimental Calibration Benchmark:</span> Model parameters were calibrated against $N = 14$ published experimental polarization data points for Nafion 115 at $75^\circ\text{C}$ and $30\text{ bar}$ from Bernt and Gasteiger [6] and Rakousky <em>et al.</em> [7]. As depicted in Fig. 1(b), the calibrated model achieves an exceptional fit: Root Mean Squared Error ($\text{RMSE}$) of $3.10\text{ mV}$, Mean Absolute Error ($\text{MAE}$) of $3.01\text{ mV}$, and $R^2 = 0.99971$. Table I summarizes the calibrated electrochemical characteristics across current densities.
+    </p>
+
+    <!-- Table I -->
+    <div class="ieee-table-wrap">
+      <div class="ieee-tab-num">TABLE I</div>
+      <div class="ieee-tab-title">Calibrated PEMWE Polarization and Energy Metrics ($75^\circ\text{C}, 30\text{ bar}$, Nafion 115)</div>
+      <table class="ieee-table">
+        <thead>
+          <tr>
+            <th>$i$ (A/cm$^2$)</th>
+            <th>$V_{\text{rev}}$ (V)</th>
+            <th>$\eta_{\text{act}}$ (V)</th>
+            <th>$\eta_{\text{ohm}}$ (V)</th>
+            <th>$\eta_{\text{conc}}$ (V)</th>
+            <th>$V_{\text{cell}}$ (V)</th>
+            <th>$\text{SEC}_{\text{sys}}$ (kWh/kg)</th>
+            <th>$y_{\text{H}_2}$ (mol%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0.50</td>
+            <td>1.234</td>
+            <td>0.293</td>
+            <td>0.056</td>
+            <td>0.007</td>
+            <td><strong>1.590</strong></td>
+            <td>46.69</td>
+            <td>0.663</td>
+          </tr>
+          <tr>
+            <td>1.00</td>
+            <td>1.234</td>
+            <td>0.326</td>
+            <td>0.113</td>
+            <td>0.019</td>
+            <td><strong>1.691</strong></td>
+            <td>48.86</td>
+            <td>0.332</td>
+          </tr>
+          <tr>
+            <td>1.80<sup>a</sup></td>
+            <td>1.234</td>
+            <td>0.355</td>
+            <td>0.203</td>
+            <td>0.046</td>
+            <td><strong>1.838</strong></td>
+            <td>52.62</td>
+            <td>0.185</td>
+          </tr>
+          <tr>
+            <td>2.50</td>
+            <td>1.234</td>
+            <td>0.371</td>
+            <td>0.281</td>
+            <td>0.078</td>
+            <td><strong>1.965</strong></td>
+            <td>56.01</td>
+            <td>0.133</td>
+          </tr>
+          <tr>
+            <td>3.00</td>
+            <td>1.234</td>
+            <td>0.380</td>
+            <td>0.338</td>
+            <td>0.106</td>
+            <td><strong>2.058</strong></td>
+            <td>58.51</td>
+            <td>0.111</td>
+          </tr>
+          <tr>
+            <td>3.50</td>
+            <td>1.234</td>
+            <td>0.388</td>
+            <td>0.394</td>
+            <td>0.137</td>
+            <td><strong>2.153</strong></td>
+            <td>61.11</td>
+            <td>0.095</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="tab-fn"><sup>a</sup>Nominal rating ($1.80\text{ A/cm}^2$, $\eta_{\text{LHV}} = 63.34\%$, $P_{\text{dens}} = 3.308\text{ W/cm}^2$).</div>
+    </div>
+
+    <p class="no-indent">
+      <span class="ieee-subsubsec">Crossover Safety and Ramping Degradation:</span> Accounting for catalytic recombination ($\eta_{\text{recomb}} = 0.88$), anodic $\text{H}_2$-in-$\text{O}_2$ is:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$y_{\text{H}_2,\text{an}}(i) = \frac{(1 - \eta_{\text{recomb}})\, i_{\text{cross}}}{0.5\, i + (1 - \eta_{\text{recomb}})\, i_{\text{cross}}} \times 100\%$$</div>
+      <div class="eq-num">(8)</div>
+    </div>
+    <p class="no-indent">
+      where $i_{\text{cross}} = 0.0139\text{ A/cm}^2$ at $30\text{ bar}$. Enforcing $i_{\min} = 0.20\text{ A/cm}^2$ guarantees $y_{\text{H}_2,\text{an}} \le 1.64\text{ mol\%} &lt; 2.0\text{ mol\%}$ ($50\%$ LEL limit).
+    </p>
+    <p>
+      Hourly voltage degradation combines baseline aging and dynamic stress [8]:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$\dot{V}_{\text{deg}}(t) = 1.20 + 0.25 + 2.80\max\!\big(0, i(t) - 1.80\big)^{1.85} + 1.40\left|\frac{di}{dt}\right|$$</div>
+      <div class="eq-num">(9)</div>
+    </div>
+    <p class="no-indent">
+      Stack replacement occurs at $\Delta V_{\text{deg}} = 180\text{ mV}$ (capped at $12$ years).
+    </p>
+
+    <!-- Section III: Surrogate -->
+    <h2 class="ieee-sec">III. Physics-Guided Surrogate Architecture and Controlled Ablation</h2>
+
+    <h3 class="ieee-subsec">A. Surrogate Design and Leak-Free Feature Engineering</h3>
+    <p class="no-indent">
+      Evaluating candidate designs across $52,608$ hourly timesteps requires $35.96\text{ ms}$ with Numba compilation ($407.49\text{ ms}$ under Python ODE). To enable multi-objective search without target leakage, we formulate a strictly leak-free $12$-dimensional dimensionless feature map $\mathbf{\Phi}(\mathbf{x})$:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$\mathbf{\Phi}(\mathbf{x}) = \left[\begin{array}{l}
+      P_w,\, P_s,\, P_{\text{PEM}},\, E_b,\, i_{\max},\\
+      P_w/P_{\text{PEM}},\, P_s/P_{\text{PEM}},\, E_b/P_{\text{PEM}},\\
+      P_s/(P_w + P_s),\, i_{\max}/i_{\text{nom}},\\
+      V_{\text{cell}}(i_{\max}),\, \eta_F(i_{\max})
+      \end{array}\right]^T$$</div>
+      <div class="eq-num">(10)</div>
+    </div>
+    <p class="no-indent">
+      containing zero economic weighting or target variables.
+    </p>
+
+    <!-- Figure 2 -->
+    <div class="ieee-fig">
+      <img src="figures/fig2_green_surrogate_parity_and_efficiency.png" alt="Surrogate Validation">
+      <div class="ieee-fig-cap">
+        Fig. 2. Physics-guided surrogate validation: (a) Parity plot for LCOH ($R^2 = 0.9982$, $\text{RMSE} = \text{INR } 1.66/\text{kg}$); (b) Degradation parity ($R^2 = 0.9946$); (c) Compute savings showing an $89.94\%$ FLOP reduction and $4,206\times$ inference speedup.
+      </div>
+    </div>
+
+    <h3 class="ieee-subsec">B. Controlled $2 \times 5$ Ablation Experiment</h3>
+    <p class="no-indent">
+      To rigorously test Hypothesis H2, a Latin Hypercube Design ($N = 360$) was evaluated across the 6-year ($52,608\text{ h}$) simulation pipeline. We executed a $2 \times 5$ factorial experiment comparing Raw 5D vs.\ Physics-Guided 12D features across five model families under 5-fold cross-validation (Table II).
+    </p>
+
+    <!-- Table II -->
+    <div class="ieee-table-wrap">
+      <div class="ieee-tab-num">TABLE II</div>
+      <div class="ieee-tab-title">$2 \times 5$ Controlled Surrogate Ablation Benchmark (5-Fold CV on $52,608$-Hour Evaluations)</div>
+      <table class="ieee-table">
+        <thead>
+          <tr>
+            <th class="left">Feature / Model</th>
+            <th>Mean $R^2$</th>
+            <th>LCOH $R^2$</th>
+            <th>LCOH RMSE</th>
+            <th>Params</th>
+            <th>FLOPs</th>
+            <th>Eval Latency</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="left" colspan="7"><em>Raw 5D Features:</em></td>
+          </tr>
+          <tr>
+            <td class="left">Compact-MLP (lbfgs)</td>
+            <td>$0.9944 \pm 0.0041$</td>
+            <td>0.9985</td>
+            <td>INR $1.51 \pm 0.61$</td>
+            <td>3,604</td>
+            <td>6,768</td>
+            <td>13.9 $\mu$s</td>
+          </tr>
+          <tr>
+            <td class="left">Compact-MLP (adam)</td>
+            <td>$0.9630 \pm 0.0082$</td>
+            <td>0.9873</td>
+            <td>INR $4.57 \pm 0.54$</td>
+            <td>3,604</td>
+            <td>6,768</td>
+            <td>9.2 $\mu$s</td>
+          </tr>
+          <tr>
+            <td class="left">Regularized-DNN (adam)</td>
+            <td>$0.9695 \pm 0.0105$</td>
+            <td>0.9869</td>
+            <td>INR $4.57 \pm 0.72$</td>
+            <td>44,548</td>
+            <td>87,296</td>
+            <td>10.1 $\mu$s</td>
+          </tr>
+          <tr>
+            <td class="left">HistGradientBoosting</td>
+            <td>$0.9208 \pm 0.0069$</td>
+            <td>0.9670</td>
+            <td>INR $7.35 \pm 0.70$</td>
+            <td>15,500</td>
+            <td>5,000</td>
+            <td>250.6 $\mu$s</td>
+          </tr>
+          <tr>
+            <td class="left">Gaussian Process</td>
+            <td>$0.9895 \pm 0.0059$</td>
+            <td>0.9975</td>
+            <td>INR $1.92 \pm 0.84$</td>
+            <td>1,152</td>
+            <td>11,520</td>
+            <td>25.5 $\mu$s</td>
+          </tr>
+          <tr>
+            <td class="left" colspan="7"><em>Physics 12D Features (Leak-Free):</em></td>
+          </tr>
+          <tr>
+            <td class="left"><strong>Green-MLP (lbfgs)</strong></td>
+            <td>$\mathbf{0.9943 \pm 0.0031}$</td>
+            <td><strong>0.9982</strong></td>
+            <td><strong>INR 1.66 $\pm$ 0.51</strong></td>
+            <td><strong>4,612</strong></td>
+            <td><strong>8,784</strong></td>
+            <td><strong>8.55 $\mu$s</strong></td>
+          </tr>
+          <tr>
+            <td class="left">Compact-MLP (adam)</td>
+            <td>$0.9668 \pm 0.0076$</td>
+            <td>0.9880</td>
+            <td>INR $4.42 \pm 0.86$</td>
+            <td>4,612</td>
+            <td>8,784</td>
+            <td>7.96 $\mu$s</td>
+          </tr>
+          <tr>
+            <td class="left">Regularized-DNN (adam)</td>
+            <td>$0.9721 \pm 0.0081$</td>
+            <td>0.9909</td>
+            <td>INR $3.89 \pm 0.62$</td>
+            <td>48,132</td>
+            <td>94,464</td>
+            <td>9.45 $\mu$s</td>
+          </tr>
+          <tr>
+            <td class="left">HistGradientBoosting</td>
+            <td>$0.9213 \pm 0.0081$</td>
+            <td>0.9649</td>
+            <td>INR $7.56 \pm 0.92$</td>
+            <td>15,500</td>
+            <td>5,000</td>
+            <td>227.4 $\mu$s</td>
+          </tr>
+          <tr>
+            <td class="left">Gaussian Process</td>
+            <td>$0.9888 \pm 0.0064$</td>
+            <td>0.9969</td>
+            <td>INR $2.19 \pm 0.83$</td>
+            <td>1,152</td>
+            <td>27,648</td>
+            <td>26.3 $\mu$s</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Table II reveals two fundamental findings:
+    </p>
+    <ol class="ieee-list">
+      <li><em>Feature representations:</em> Raw 5D inputs and leak-free 12D physics features achieve virtually identical peak accuracy ($R^2 = 0.9944$ vs.\ $0.9943$). However, physics features reduce cross-validation variance by $24.4\%$ (standard deviation drops from $\pm 0.0041$ to $\pm 0.0031$), enhancing domain consistency.</li>
+      <li><em>Computational Efficiency:</em> The proposed <strong>Green-MLP</strong> ($4,612$ parameters, $8,784$ FLOPs) achieves an $89.94\%$ reduction in FLOPs relative to the regularized deep network ($94,464$ FLOPs) while outperforming it significantly ($R^2 = 0.9943$ vs.\ $0.9721$, LCOH RMSE of $\text{INR } 1.66/\text{kg}$ vs.\ $\text{INR } 3.89/\text{kg}$). With an inference latency of $8.55\ \mu\text{s}$, Green-MLP delivers a $4,206\times$ speedup over the Numba DAE model and $47,659\times$ over Python ODE.</li>
+      <li><em>Pareto Preservation:</em> Out-of-distribution Pareto evaluation yields exceptional rank preservation: Spearman's $\rho = 0.9994$ on LCOH and $\rho = 0.9960$ on degradation, with an absolute LCOH RMSE of only $\text{INR } 1.19/\text{kg}$.</li>
+    </ol>
+
+    <!-- Section IV: Optimization -->
+    <h2 class="ieee-sec">IV. Multi-Objective Optimization, Siting Regimes, and Uncertainty Quantification</h2>
+
+    <h3 class="ieee-subsec">A. Constrained Optimization and Split-CAPEX Formulation</h3>
+    <p class="no-indent">
+      For an industrial demand of $\dot{m}_{\text{H}_2,\text{req}} = 500\text{ kg H}_2/\text{h}$ ($4,354.5\text{ t/yr}$), we formulate:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$\min_{\mathbf{x} \in \Omega} \ \mathbf{F}(\mathbf{x}) = \big[\ \text{LCOH},\ \text{LPSP},\ \text{CI}_{\text{CO}_2} + 0.10\,\dot{V}_{\text{deg}}\ \big]^T$$</div>
+      <div class="eq-num">(11)</div>
+    </div>
+    <p class="no-indent">
+      subject to Deb's feasibility-first constraints [20]: $\text{LPSP} \le 1.0\%$ and $\text{StackLife} \ge 7.5\text{ yr}$.
+    </p>
+    <p>
+      We introduce <strong>Split-CAPEX Electrolyzer Modeling</strong>:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$\text{CAPEX}_{\text{PEM}} = P_{\text{PEM,nom}}\cdot c_{\text{stack}} + P_{\text{PEM,peak}}(\mathbf{x})\cdot c_{\text{BOP}}$$</div>
+      <div class="eq-num">(12)</div>
+    </div>
+    <p class="no-indent">
+      where $c_{\text{stack}} = \text{INR } 3.364\text{ Cr/MW}$ ($58\%$ of electrolyzer cost) scales with nominal stack area at $i_{\text{nom}} = 1.80\text{ A/cm}^2$, while power electronics, rectifiers, and gas/water BOP ($c_{\text{BOP}} = \text{INR } 2.436\text{ Cr/MW}$, $42\%$) must be sized for peak power:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$P_{\text{PEM,peak}} = P_{\text{PEM,nom}} \frac{i_{\max} V_{\text{cell}}(i_{\max})}{i_{\text{nom}} V_{\text{cell}}(i_{\text{nom}})}$$</div>
+      <div class="eq-num">(13)</div>
+    </div>
+    <p class="no-indent">
+      Other capital costs: coastal wind at $\text{INR } 6.20\text{ Cr/MW}$, solar PV at $\text{INR } 3.60\text{ Cr/MW}$, $\text{LiFePO}_4$ battery storage at $\text{INR } 1.65\text{ Cr/MWh}$, and $30\text{ bar}$ $\text{H}_2$ tanks at $\text{INR } 3,267/\text{kg}$. Grid backup emissions reflect the CEA baseline of $0.715\text{ kg CO}_2/\text{kWh}$ [21].
+    </p>
+
+    <!-- Figure 3 -->
+    <div class="ieee-fig">
+      <img src="figures/fig3_pareto_front_3d_tradeoffs.png" alt="Pareto Frontier">
+      <div class="ieee-fig-cap">
+        Fig. 3. (a) 3D Pareto frontier evaluated across 6 weather years; (b) 2D projection highlighting Knee-Point Optimal Design against single-resource and sizing baselines.
+      </div>
+    </div>
+
+    <h3 class="ieee-subsec">B. Optimization Results and Split-CAPEX Trade-off</h3>
+    <p class="no-indent">
+      NSGA-II across $5$ random seeds achieved $\text{HV} = 0.8745 \pm 0.0026$. Table III compares the resulting Knee-Point plant against baselines.
+    </p>
+
+    <!-- Table III -->
+    <div class="ieee-table-wrap">
+      <div class="ieee-tab-num">TABLE III</div>
+      <div class="ieee-tab-title">Optimal Hybrid Sizing vs.\ Siting Regimes and Sizing Baselines ($500\text{ kg H}_2/\text{h}$, 6-Year Weather)</div>
+      <table class="ieee-table">
+        <thead>
+          <tr>
+            <th class="left">Metric / Variable</th>
+            <th>Knee-Point Design</th>
+            <th>Fixed $i_{\text{nom}} = 1.80$</th>
+            <th>Regime A (Coastal)</th>
+            <th>Wind-Only</th>
+            <th>Solar-Only</th>
+            <th>Knee in Reg.\ A</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="left">Corridor / Siting</td>
+            <td>Regime B (Wheeled)</td>
+            <td>Regime B (Wheeled)</td>
+            <td>Regime A (Coastal)</td>
+            <td>Regime B (Wheeled)</td>
+            <td>Regime B (Coastal PV)</td>
+            <td>Regime A (Coastal)</td>
+          </tr>
+          <tr>
+            <td class="left">Wind Capacity (MW)</td>
+            <td><strong>48.02</strong></td>
+            <td>52.70</td>
+            <td>44.00</td>
+            <td>144.83</td>
+            <td>0.00</td>
+            <td>48.02</td>
+          </tr>
+          <tr>
+            <td class="left">Solar PV Capacity (MW)</td>
+            <td><strong>72.77</strong></td>
+            <td>67.74</td>
+            <td>125.57</td>
+            <td>0.00</td>
+            <td>207.15</td>
+            <td>72.77</td>
+          </tr>
+          <tr>
+            <td class="left">PEM Nominal (MW)</td>
+            <td><strong>43.61</strong></td>
+            <td>40.50</td>
+            <td>50.53</td>
+            <td>53.85</td>
+            <td>54.19</td>
+            <td>43.61</td>
+          </tr>
+          <tr>
+            <td class="left">Max Current $i_{\max}^*$ (A/cm$^2$)</td>
+            <td><strong>1.764</strong></td>
+            <td>1.800</td>
+            <td>2.355</td>
+            <td>2.488</td>
+            <td>2.566</td>
+            <td>1.764</td>
+          </tr>
+          <tr>
+            <td class="left">Peak PEM Power (MW)</td>
+            <td><strong>42.58</strong></td>
+            <td>40.50</td>
+            <td>69.72</td>
+            <td>79.47</td>
+            <td>83.09</td>
+            <td>42.59</td>
+          </tr>
+          <tr>
+            <td class="left">Battery Buffer (MWh)</td>
+            <td><strong>86.86</strong></td>
+            <td>75.92</td>
+            <td>83.51</td>
+            <td>147.78</td>
+            <td>198.92</td>
+            <td>86.86</td>
+          </tr>
+          <tr>
+            <td class="left">Total CAPEX (INR Cr)</td>
+            <td><strong>1,012.23</strong></td>
+            <td>989.55</td>
+            <td>1,261.25</td>
+            <td>1,575.32</td>
+            <td>1,517.46</td>
+            <td>1,012.26</td>
+          </tr>
+          <tr>
+            <td class="left">--- PEM Stack (INR Cr)</td>
+            <td><strong>146.69</strong></td>
+            <td>136.24</td>
+            <td>169.97</td>
+            <td>181.15</td>
+            <td>182.29</td>
+            <td>146.70</td>
+          </tr>
+          <tr>
+            <td class="left">--- PEM BOP/Rect (INR Cr)</td>
+            <td><strong>103.73</strong></td>
+            <td>98.66</td>
+            <td>169.85</td>
+            <td>193.59</td>
+            <td>202.41</td>
+            <td>103.74</td>
+          </tr>
+          <tr>
+            <td class="left">Wheeling Cost (INR Cr/yr)</td>
+            <td><strong>13.11</strong></td>
+            <td>14.39</td>
+            <td>0.00</td>
+            <td>39.55</td>
+            <td>0.00</td>
+            <td>0.00</td>
+          </tr>
+          <tr>
+            <td class="left"><strong>LCOH (INR/kg H$_2$)</strong></td>
+            <td><strong>332.51</strong></td>
+            <td><strong>329.12</strong></td>
+            <td><strong>382.04</strong></td>
+            <td>550.69</td>
+            <td>449.27</td>
+            <td><strong>399.83</strong></td>
+          </tr>
+          <tr>
+            <td class="left"><strong>LCOH (USD/kg H$_2$)</strong></td>
+            <td><strong>$3.96</strong></td>
+            <td><strong>$3.92</strong></td>
+            <td><strong>$4.55</strong></td>
+            <td>$6.56</td>
+            <td>$5.35</td>
+            <td><strong>$4.76</strong></td>
+          </tr>
+          <tr>
+            <td class="left">Unmet Demand LPSP (%)</td>
+            <td><strong>0.622%</strong></td>
+            <td>0.979%</td>
+            <td>0.702%</td>
+            <td>3.501%</td>
+            <td>1.318%</td>
+            <td><strong>21.295%</strong></td>
+          </tr>
+          <tr>
+            <td class="left">Curtailment (%)</td>
+            <td><strong>30.71%</strong></td>
+            <td>32.33%</td>
+            <td>19.81%</td>
+            <td>61.65%</td>
+            <td>40.21%</td>
+            <td>7.82%</td>
+          </tr>
+          <tr>
+            <td class="left">Carbon Intensity (kg/kg)</td>
+            <td><strong>1.866</strong></td>
+            <td>1.965</td>
+            <td>2.433</td>
+            <td>2.705</td>
+            <td>3.840</td>
+            <td>9.400</td>
+          </tr>
+          <tr>
+            <td class="left">Degradation Rate ($\mu$V/h)</td>
+            <td><strong>1.471</strong></td>
+            <td>1.480</td>
+            <td>1.595</td>
+            <td>1.396</td>
+            <td>1.609</td>
+            <td>1.302</td>
+          </tr>
+          <tr>
+            <td class="left">Stack Lifetime (Years)</td>
+            <td><strong>12.0</strong></td>
+            <td>12.0</td>
+            <td>12.0</td>
+            <td>12.0</td>
+            <td>12.0</td>
+            <td>12.0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="no-indent">
+      <span class="ieee-subsubsec">Addressing Hypothesis H1:</span> The knee point operates at $i_{\max}^* = 1.764\text{ A/cm}^2$—below nominal rating ($1.80\text{ A/cm}^2$). Sizing at fixed nominal current achieves $\text{INR } 329.12/\text{kg}$ ($1.03\%$ cheaper). Pushing current density above $2.0\text{ A/cm}^2$ saves membrane area but increases BOP capital expenditure ($c_{\text{BOP}} = \text{INR } 2.44\text{ Cr/MW}$), while electrical efficiency drops (SEC rises to $58.51\text{ kWh/kg}$ at $3.0\text{ A/cm}^2$).
+    </p>
+    <p class="no-indent">
+      <span class="ieee-subsubsec">Regime Siting Insights:</span> Wheeled highland wind (Regime B, $\text{INR } 332.51/\text{kg}$) achieves a $12.96\%$ lower LCOH than optimized coastal generation (Regime A, $\text{INR } 382.04/\text{kg}$), even after paying $\text{INR } 13.11\text{ Cr/yr}$ in KERC wheeling charges. Operating the knee-point plant solely on coastal wind results in severe reliability failure ($\text{LPSP} = 21.30\%$).
+    </p>
+
+    <h3 class="ieee-subsec">C. Explainable AI and Monte Carlo Uncertainty Analysis</h3>
+    <p class="no-indent">
+      Permutation importance and an $N = 5,000$ physics-evaluated Monte Carlo analysis were conducted across seven stochastic variables (Fig. 4):
+    </p>
+    <ol class="ieee-list">
+      <li><em>XAI Sensitivity:</em> Renewable CAPEX explains $48.10\%$ of LCOH variance, followed by PEM Stack CAPEX ($14.73\%$), Battery CAPEX ($14.15\%$), Solar Capacity ($12.18\%$), and Current Density ($10.83\%$).</li>
+      <li><em>Monte Carlo Risk:</em> Mean LCOH is $\text{INR } 335.33 \pm 24.33/\text{kg}$ ($&dollar;3.99/\text{kg}$), with a $90\%$ confidence interval of $[\text{INR } 296.58,\, \text{INR } 376.66]/\text{kg}$. The probability of LCOH remaining below $\text{INR } 350/\text{kg}$ is $73.3\%$.</li>
+      <li><em>Global Sensitivity:</em> First-order Sobol indices reveal that Renewable CAPEX explains $56.65\%$ of output variance, followed by WACC ($21.58\%$) and PEM CAPEX ($18.89\%$). Weather resource anomalies account for $&lt;1.3\%$ of variance.</li>
+    </ol>
+
+    <!-- Figure 4 -->
+    <div class="ieee-fig">
+      <img src="figures/fig4_xai_feature_sensitivity_and_uncertainty.png" alt="XAI and Monte Carlo">
+      <div class="ieee-fig-cap">
+        Fig. 4. (a) Permutation feature importance across objectives; (b) $5,000$-sample Monte Carlo LCOH distribution ($P_{05} = \text{INR } 296.58/\text{kg}$, Mean $= \text{INR } 335.33/\text{kg}$, $P_{95} = \text{INR } 376.66/\text{kg}$).
+      </div>
+    </div>
+
+    <!-- Section V: Process Monitoring -->
+    <h2 class="ieee-sec">V. Load-Compensated Multivariate Statistical Process Monitoring (MSPM)</h2>
+
+    <h3 class="ieee-subsec">A. Latent-Variable PCA Formulation on Real Plant Dispatch</h3>
+    <p class="no-indent">
+      Under variable renewable power, operating current fluctuates across $i \in [0.20, 1.76]\text{ A/cm}^2$, driving normal cell voltage variations ($1.51$–$1.83\text{ V}$). We monitor $m = 9$ physically measurable industrial variables [14], [15]:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$\mathbf{z}(t) = \big[\ i,\ V_{\text{cell}},\ T_{\text{stack}},\ P_{\text{cat}},\ R_{\text{HFR}},\ \dot{m}_{\text{H}_2},\ \dot{m}_{\text{cool}},\ \Delta T_{\text{stack}},\ c_{\text{H}_2\text{-in-O}_2}\ \big]^T$$</div>
+      <div class="eq-num">(14)</div>
+    </div>
+    <p class="no-indent">
+      Retaining $k = 3$ principal components explains $96.03\%$ of normal dispatch variance ($T^2_{0.99} = 11.58$, $Q_{0.99} = 1.85$).
+    </p>
+
+    <!-- Figure 5 -->
+    <div class="ieee-fig">
+      <img src="figures/fig5_pca_fault_monitoring_t2_spe.png" alt="PCA Fault Monitoring">
+      <div class="ieee-fig-cap">
+        Fig. 5. Multivariate statistical fault monitoring: (a) Hotelling's $T^2$ control chart; (b) Jackson–Mudholkar $Q/\text{SPE}$ chart; (c) Sensor contribution diagnosis isolating thermal-pressure anomalies during Fault 1 and voltage-pressure anomalies during Fault 2.
+      </div>
+    </div>
+
+    <h3 class="ieee-subsec">B. Rigorous Benchmark: PCA vs.\ Load-Compensated 1D EWMA</h3>
+    <p class="no-indent">
+      PCA was benchmarked against a <strong>Load-Compensated 1D Voltage-Residual EWMA Filter</strong>:
+    </p>
+    <div class="eq-row">
+      <div class="eq-math">$$r_V(t) = V_{\text{meas}}(t) - V_{\text{model}}\big(i(t), T(t)\big)$$</div>
+      <div class="eq-num">(15)</div>
+    </div>
+    <div class="eq-row">
+      <div class="eq-math">$$s(t) = \lambda_{\text{ewma}}\, r_V(t) + (1 - \lambda_{\text{ewma}})\, s(t-1)$$</div>
+      <div class="eq-num">(16)</div>
+    </div>
+    <p class="no-indent">
+      ($\lambda_{\text{ewma}} = 0.20$, $3\sigma$ limits) across $N = 100$ independent Monte Carlo realizations with synthetic sensor noise (Table IV).
+    </p>
+
+    <!-- Table IV -->
+    <div class="ieee-table-wrap">
+      <div class="ieee-tab-num">TABLE IV</div>
+      <div class="ieee-tab-title">Fault Detection Benchmark: 9-Sensor PCA vs.\ Load-Compensated EWMA ($100$ Realizations)</div>
+      <table class="ieee-table">
+        <thead>
+          <tr>
+            <th class="left">Performance Metric</th>
+            <th>PCA ($T^2$ / $Q$)</th>
+            <th>Load-Comp.\ EWMA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="left">Monitored Space</td>
+            <td>$k=3$ / 9 Sensors</td>
+            <td>1D Residual $r_V(t)$</td>
+          </tr>
+          <tr>
+            <td class="left">Normal False Alarm Rate, FAR (%)</td>
+            <td>$9.80 \pm 0.87\%$</td>
+            <td><strong>5.39%</strong></td>
+          </tr>
+          <tr>
+            <td class="left">Fault 1 Detection Rate, FDR ($Q$-chart)</td>
+            <td>$86.34 \pm 1.96\%$</td>
+            <td rowspan="2"><strong>89.44 $\pm$ 2.71%</strong></td>
+          </tr>
+          <tr>
+            <td class="left">Fault 1 Detection Rate, FDR ($T^2$-chart)</td>
+            <td>91.81%</td>
+          </tr>
+          <tr>
+            <td class="left">Fault 1 Detection Latency (Hours)</td>
+            <td>$11.6 \pm 3.2\text{ h}$</td>
+            <td><strong>10.6 $\pm$ 3.6 h</strong></td>
+          </tr>
+          <tr>
+            <td class="left">Fault 2 Detection Rate, FDR (Combined)</td>
+            <td><strong>100.0 $\pm$ 0.0%</strong></td>
+            <td><strong>100.0 $\pm$ 0.0%</strong></td>
+          </tr>
+          <tr>
+            <td class="left">Root-Cause Diagnosis Capability</td>
+            <td><strong>Yes (Contribution)</strong></td>
+            <td>None (1D Scalar)</td>
+          </tr>
+          <tr>
+            <td class="left">--- Primary Sensor Isolation (Fault 1)</td>
+            <td>Stack Temp (60.2%)</td>
+            <td>N/A</td>
+          </tr>
+          <tr>
+            <td class="left">--- Secondary Sensor Isolation (Fault 1)</td>
+            <td>Cathode Press (35.1%)</td>
+            <td>N/A</td>
+          </tr>
+          <tr>
+            <td class="left">--- Primary Sensor Isolation (Fault 2)</td>
+            <td>Cell Voltage (34.6%)</td>
+            <td>N/A</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Addressing <strong>Hypothesis H3</strong>:
+    </p>
+    <ol class="ieee-list">
+      <li><em>Detection Latency:</em> PCA does not provide an early detection lead time over a load-compensated residual filter. The 1D EWMA filter detects incipient dehydration in $10.6 \pm 3.6\text{ h}$ with lower false alarm rate ($5.39\%$), whereas PCA detects it in $11.6 \pm 3.2\text{ h}$ ($\text{FAR} = 9.80\%$).</li>
+      <li><em>Diagnostic Value:</em> While 1D EWMA cannot identify the fault origin, PCA variable contribution plots (Fig. 5(c)) isolate Stack Temperature ($60.17\%$) and Cathode Pressure ($35.07\%$) for Fault 1, versus Cell Voltage ($34.61\%$), Cathode Pressure ($26.04\%$), and $\text{H}_2$ flow rate ($20.50\%$) for Fault 2.</li>
+    </ol>
+
+    <!-- Section VI: Dynamic Dispatch -->
+    <h2 class="ieee-sec">VI. Seasonal Dynamic Dispatch Verification</h2>
+    <p class="no-indent">
+      Fig. 6 illustrates hourly dynamic operation across two 7-day ($168\text{ h}$) windows:
+    </p>
+    <ul class="ieee-list">
+      <li><em>Pre-Monsoon Summer (April, Fig. 6(a)):</em> Diurnal solar generation ($\sim 70\text{ MW}$) drives daytime production to $1,050\text{ kg/h}$, charging the $30\text{ bar}$ buffer tank to its $14,000\text{ kg}$ capacity to maintain delivery overnight.</li>
+      <li><em>Southwest Monsoon (July, Fig. 6(b)):</em> Continuous highland wind ($30$–$45\text{ MW}$) sustains baseload electrolysis ($480$–$540\text{ kg/h}$) at high nominal efficiency ($1.1$–$1.4\text{ A/cm}^2$) with zero battery cycling.</li>
+    </ul>
+
+    <!-- Figure 6 -->
+    <div class="ieee-fig">
+      <img src="figures/fig6_dynamic_dispatch_monsoon_vs_summer.png" alt="Dynamic Dispatch">
+      <div class="ieee-fig-cap">
+        Fig. 6. Hourly dispatch profiles of the Knee-Point Plant ($168\text{ h}$): (a) Pre-monsoon summer week (solar-dominant diurnal ramping); (b) Southwest Monsoon week (steady baseload wind generation); (c) Compressed $\text{H}_2$ buffer tank inventory and battery state of charge.
+      </div>
+    </div>
+
+    <!-- Section VII: Discussion & Limitations -->
+    <h2 class="ieee-sec">VII. Discussion and Limitations</h2>
+    <p class="no-indent">
+      Several engineering limitations should be noted:
+    </p>
+    <ol class="ieee-list">
+      <li><em>Cell-to-Stack Extrapolation:</em> The electrochemical model was calibrated on single-cell data ($14$ points). In commercial multi-megawatt stacks, flow maldistribution along channels may introduce cell voltage variations of $\sim 25\text{ mV}$.</li>
+      <li><em>Degradation Kinetics:</em> The degradation formulation uses semi-empirical ramping kernels. Long-term multi-year operating data from megawatt facilities will further refine catalyst dissolution kinetics.</li>
+      <li><em>Regulatory and Wheeling Tariffs:</em> Siting benefits depend on Karnataka's open-access transmission framework. Revisions to KERC tariff orders could alter the economic margin of wheeled wind.</li>
+    </ol>
+
+    <!-- Section VIII: Conclusion -->
+    <h2 class="ieee-sec">VIII. Conclusion</h2>
+    <p class="no-indent">
+      This study presented an audited, physics-guided optimization and multivariate process monitoring study of a $500\text{ kg H}_2/\text{h}$ green hydrogen plant in southwestern India. Key scientific conclusions include:
+    </p>
+    <ol class="ieee-list">
+      <li><em>Electrochemical-Economic Trade-off:</em> Sizing BOP for peak overload throughput outweighs active area savings. The optimal knee-point design operates at $i_{\max}^* = 1.764\text{ A/cm}^2$, delivering $\text{LCOH} = \text{INR } 332.51/\text{kg H}_2$ ($&dollar;3.96/\text{kg}$) with an LPSP of $0.62\%$ and $12.0$-year stack lifetime.</li>
+      <li><em>Regional Siting Strategy:</em> Wheeled inland wind from the Chitradurga–Gadag corridor achieves strong seasonal complementarity with coastal solar, lowering LCOH by $12.96\%$ relative to pure coastal co-location ($\text{INR } 382.04/\text{kg}$) and avoiding catastrophic supply failure ($\text{LPSP} = 21.30\%$) under coastal wind droughts.</li>
+      <li><em>Green Surrogate Efficiency:</em> A leak-free, compact physics-guided surrogate (<strong>Green-MLP</strong>, $4,612$ parameters) achieves $R^2 = 0.9943 \pm 0.0031$ and near-perfect Pareto rank preservation ($\rho = 0.9994$), slashing forward FLOPs by $89.94\%$ and accelerating multi-year simulation by $4,206\times$.</li>
+      <li><em>Process Monitoring Realities:</em> Latent-variable PCA ($k=3$, $96.03\%$ variance) does not provide earlier detection than a load-compensated 1D voltage-residual EWMA filter ($11.6\text{ h}$ vs.\ $10.6\text{ h}$ latency), but delivers critical multi-sensor root-cause diagnosis via contribution plots ($95.2\%$ thermal-pressure isolation on dehydration, $100\%$ detection on anode flooding).</li>
+    </ol>
+
+    <!-- Acknowledgment -->
+    <h2 class="ieee-sec">Acknowledgment</h2>
+    <p class="no-indent">
+      The authors acknowledge the Department of Computer Science and Engineering, the Department of Civil Engineering (School of Civil &amp; Chemical Engineering), and the IIChE Student Chapter at Manipal Institute of Technology (MIT), Manipal Academy of Higher Education (MAHE), for providing computing facilities and academic support under CHEMIGNITE 2026 (ASPIRE).
+    </p>
+
+    <!-- References -->
+    <h2 class="ieee-sec">References</h2>
+    <div class="ieee-refs">
+      <div class="ref-item"><span class="ref-tag">[1]</span><span class="ref-text">Ministry of New and Renewable Energy (MNRE), <em>National Green Hydrogen Mission: Mission Document</em>. New Delhi, India: Government of India, Jan. 2023.</span></div>
+      <div class="ref-item"><span class="ref-tag">[2]</span><span class="ref-text">N. K. Pujari, R. K. Inapakurthi, and K. Mitra, "Integrated forecasting and design of distributed wind-to-hydrogen systems for urban sustainability," <em>Comput. Chem. Eng.</em>, vol. 211, p. 108842, Aug. 2026. DOI: 10.1016/j.compchemeng.2026.108842.</span></div>
+      <div class="ref-item"><span class="ref-tag">[3]</span><span class="ref-text">K. Mitra, R. Everson, and J. Fieldsend, Eds., <em>Optimization, Uncertainty and Machine Learning in Wind Energy Conversion Systems</em>. Cham, Switzerland: Springer Nature, Jan. 2025. DOI: 10.1007/978-3-031-72124-3.</span></div>
+      <div class="ref-item"><span class="ref-tag">[4]</span><span class="ref-text">Abhishek, N. K. Pujari, and K. Mitra, "AI-driven wind resource modelling for efficient wind-to-hydrogen system design at Jaisalmer," in <em>Proc. Int. Conf. AI Manuf. Sustain. (AIMS)</em>, Dec. 2025, pp. 1–8.</span></div>
+      <div class="ref-item"><span class="ref-tag">[5]</span><span class="ref-text">V. S. Masampally, K. Mitra, and V. Runkana, "Modeling and simulation of hydrogen production in a PEM water electrolyzer at high current densities," <em>Energy Convers. Manage.</em>, vol. 352, p. 121110, 2026. DOI: 10.1016/j.enconman.2026.121110.</span></div>
+      <div class="ref-item"><span class="ref-tag">[6]</span><span class="ref-text">M. Bernt and H. A. Gasteiger, "Influence of the porous transport layer on PEM water electrolysis performance at high current densities," <em>J. Electrochem. Soc.</em>, vol. 163, no. 11, pp. F3179–F3189, Sep. 2016. DOI: 10.1149/2.0651611jes.</span></div>
+      <div class="ref-item"><span class="ref-tag">[7]</span><span class="ref-text">C. Rakousky, U. Reimer, K. Wippermann, S. Kuhri, M. Carmo, and D. Stolten, "An analysis of degradation phenomena in polymer electrolyte membrane water electrolysis," <em>J. Power Sources</em>, vol. 326, pp. 120–128, Sep. 2016. DOI: 10.1016/j.jpowsour.2016.06.082.</span></div>
+      <div class="ref-item"><span class="ref-tag">[8]</span><span class="ref-text">M. Chandesris, V. M&eacute;deau, N. Guillet, S. Chelghoum, D. Thoby, and F. Druart, "Membrane degradation in PEM water electrolyzer: Numerical modeling and experimental validation," <em>Int. J. Hydrogen Energy</em>, vol. 40, no. 3, pp. 1353–1366, Jan. 2015. DOI: 10.1016/j.ijhydene.2014.11.111.</span></div>
+      <div class="ref-item"><span class="ref-tag">[9]</span><span class="ref-text">P. Trinke, P. Bensmann, and R. Hanke-Rauschenbach, "Current density effect on hydrogen crossover in PEM water electrolysis," <em>J. Electrochem. Soc.</em>, vol. 165, no. 7, pp. F502–F513, May 2018. DOI: 10.1149/2.0461807jes.</span></div>
+      <div class="ref-item"><span class="ref-tag">[10]</span><span class="ref-text">R. K. Inapakurthi, N. K. Pujari, and K. Mitra, "Maximizing energy production from wind farm layout using model predictive control," in <em>Optimization, Uncertainty and Machine Learning in Wind Energy Conversion Systems</em>. Cham: Springer, 2025, pp. 85–112.</span></div>
+      <div class="ref-item"><span class="ref-tag">[11]</span><span class="ref-text">R. Schwartz, J. Dodge, N. A. Smith, and O. Etzioni, "Green AI," <em>Commun. ACM</em>, vol. 63, no. 12, pp. 54–63, Dec. 2020. DOI: 10.1145/3381831.</span></div>
+      <div class="ref-item"><span class="ref-tag">[12]</span><span class="ref-text">M. Raissi, P. Perdikaris, and G. E. Karniadakis, "Physics-informed neural networks," <em>J. Comput. Phys.</em>, vol. 378, pp. 686–707, Feb. 2019. DOI: 10.1016/j.jcp.2018.10.045.</span></div>
+      <div class="ref-item"><span class="ref-tag">[13]</span><span class="ref-text">S. J. Qin, "Survey on data-driven industrial process monitoring and diagnosis," <em>Annu. Rev. Control</em>, vol. 36, no. 2, pp. 220–234, Dec. 2012. DOI: 10.1016/j.arcontrol.2012.09.004.</span></div>
+      <div class="ref-item"><span class="ref-tag">[14]</span><span class="ref-text">J. E. Jackson and G. S. Mudholkar, "Control procedures for residuals associated with principal component analysis," <em>Technometrics</em>, vol. 21, no. 3, pp. 341–349, Aug. 1979. DOI: 10.1080/00401706.1979.10489779.</span></div>
+      <div class="ref-item"><span class="ref-tag">[15]</span><span class="ref-text">M. Madakyaru, C. N. Bhushan, and S. R. Kulkarni, "Multivariate statistical process monitoring and improved latent-variable fault detection for nonlinear chemical processes," <em>J. Process Control</em>, vol. 134, p. 103148, 2024. DOI: 10.1016/j.jprocont.2024.103148.</span></div>
+      <div class="ref-item"><span class="ref-tag">[16]</span><span class="ref-text">M. N. Nounou, B. R. Bakshi, P. K. Goel, and X. Shen, "ches-PCA and multiscale latent variable modeling for fault detection in dynamic chemical systems," <em>AIChE J.</em>, vol. 48, no. 8, pp. 1775–1793, 2002. DOI: 10.1002/aic.690480816.</span></div>
+      <div class="ref-item"><span class="ref-tag">[17]</span><span class="ref-text">NASA POWER Project, "Prediction of Worldwide Energy Resources (Hourly Agroclimatology &amp; Solar-Wind Energy Archive, Karnataka Regional Corridors)," National Aeronautics and Space Administration, Hampton, VA, USA, 2026. Available: https://power.larc.nasa.gov.</span></div>
+      <div class="ref-item"><span class="ref-tag">[18]</span><span class="ref-text">Karnataka Electricity Regulatory Commission (KERC), "Terms and Conditions for Open Access and Renewable Wheeling Charges: Multi-Year Tariff Order," Bengaluru, Karnataka, India, 2024. Available: https://kerc.karnataka.gov.in.</span></div>
+      <div class="ref-item"><span class="ref-tag">[19]</span><span class="ref-text">T. E. Springer, T. A. Zawodzinski, and S. Gottesfeld, "Polymer electrolyte fuel cell model," <em>J. Electrochem. Soc.</em>, vol. 138, no. 8, pp. 2334–2342, Aug. 1991. DOI: 10.1149/1.2085971.</span></div>
+      <div class="ref-item"><span class="ref-tag">[20]</span><span class="ref-text">K. Deb, A. Pratap, S. Agarwal, and T. Meyarivan, "A fast and elitist multiobjective genetic algorithm: NSGA-II," <em>IEEE Trans. Evol. Comput.</em>, vol. 6, no. 2, pp. 182–197, Apr. 2002. DOI: 10.1109/4235.996017.</span></div>
+      <div class="ref-item"><span class="ref-tag">[21]</span><span class="ref-text">Central Electricity Authority (CEA), "$\text{CO}_2$ Baseline Database for the Indian Power Sector (User Guide Version 19.0)," Ministry of Power, Government of India, New Delhi, India, 2024.</span></div>
+    </div>
+
+  </div> <!-- end ieee-two-col -->
+
+</div> <!-- end page-container -->
+
+</body>
+</html>

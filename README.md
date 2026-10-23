@@ -1,8 +1,9 @@
-# Green-Surrogate Assisted Multi-Objective Optimization and Multivariate Fault Monitoring of a Coastal Hybrid Wind–Solar–PEM Green Hydrogen Plant under Meteorological Uncertainty
+# Physics-Guided Surrogate Optimization and Load-Compensated Multivariate Fault Monitoring of a Coastal Hybrid Wind–Solar–PEM Green Hydrogen Plant under Multi-Year Meteorological Uncertainty
 
-[![IEEE Conference Paper](https://img.shields.io/badge/Paper-IEEE_Format_(PDF%20%7C%20LaTeX)-00629B?style=for-the-badge&logo=ieee)](./IEEE_Paper_Krishnendu_Arav.pdf)
-[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](./simulate_and_optimize.py)
-[![License: MIT](https://img.shields.io/badge/License-MIT-10B981?style=for-the-badge)](./LICENSE)
+[![Paper: IEEE Format](https://img.shields.io/badge/Paper-IEEE_Two--Column_(PDF%20%7C%20DOCX%20%7C%20TeX)-00629B?style=for-the-badge&logo=ieee)](./IEEE_Paper_Krishnendu_Arav.pdf)
+[![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](./simulate_and_optimize.py)
+[![Validation: 100% Tests Passed](https://img.shields.io/badge/Tests-12%2F12%20Passed-10B981?style=for-the-badge)](./tests/test_scientific_validity.py)
+[![License: MIT](https://img.shields.io/badge/License-MIT-gray?style=for-the-badge)](./LICENSE)
 
 **Authors:**
 - **Krishnendu** — *Department of Computer Science and Engineering, Manipal Institute of Technology (MIT), Manipal Academy of Higher Education (MAHE), Manipal, Karnataka 576104, India*
@@ -10,27 +11,43 @@
 
 ---
 
-## Abstract
+## Overview
 
-Industrial decarbonization of coastal refining, fertilizer, and specialty chemical clusters in India demands uninterrupted, cost-effective green hydrogen ($\text{H}_2$) generation under stochastic meteorological forcing and coastal site constraints. Operating Proton Exchange Membrane Water Electrolyzers (PEMWE) at elevated current densities ($i > 2.0\text{ A/cm}^2$) offers substantial capital cost reductions by maximizing $\text{H}_2$ flux per unit active membrane area, yet introduces severe nonlinear trade-offs between two-phase mass-transport overpotential, dynamic voltage degradation, and membrane-electrode assembly (MEA) fault vulnerability.
+This repository contains the complete, independently audited, and reproducible research codebase, datasets, and deliverables accompanying our IEEE paper. The study investigates a $500\text{ kg H}_2/\text{h}$ ($4,354.5\text{ t/yr}$) green hydrogen facility powered by hybrid wind and solar resources in Karnataka, India, supplying industrial off-takers in the Udupi–Mangalore coastal corridor (e.g., MRPL and MCF).
 
-This repository provides the complete first-principles electrochemical simulation, **Physics-Informed Green Deep Learning (`Green-MLP`)** surrogate, **Multi-Objective NSGA-II Pareto Optimizer**, **Explainable AI (XAI) & Monte Carlo Uncertainty Engine**, and **Principal Component Analysis (PCA $T^2$ and Jackson–Mudholkar $Q/\text{SPE}$) Multivariate Fault Monitoring** codebase accompanying our IEEE research paper for a $500\text{ kg H}_2/\text{h}$ ($4,380\text{ t/yr}$) hybrid Wind–Solar–Battery–PEMWE facility in the Manipal–Mangalore coastal corridor ($13.3525^\circ\text{N}, 74.7928^\circ\text{E}$).
+### Core Scientific Contributions & Audited Discoveries
+1. **Multi-Year Meteorological Analysis (6 Contiguous Years, 52,608 Hours, 2019–2024):** Utilizes uninflated NASA POWER MERRA-2 reanalysis data. Proves that local coastal wind in Udupi–Mangalore ($13.35^\circ\text{N}, 74.79^\circ\text{E}$) yields a low capacity factor ($\overline{\text{CF}} = 14.70\%$), whereas open-access wheeled wind from the Chitradurga–Gadag highland corridor ($14.23^\circ\text{N}, 76.40^\circ\text{E}$, delivered $\overline{\text{CF}} = 43.29\%$) achieves strong seasonal complementarity with on-site coastal solar PV ($\overline{\text{CF}} = 21.23\%$).
+2. **First-Principles High-Current PEMWE Calibration:** Reversible potential $V_{\text{rev}}(75^\circ\text{C}, 30\text{ bar}) = 1.234\text{ V}$ using Antoine saturation vapor pressure ($0.3846\text{ bar}$). Calibrated against $N=14$ experimental points (Nafion 115, $75^\circ\text{C}$, $30\text{ bar}$) from Bernt & Gasteiger (2016) and Rakousky et al. (2016), achieving $\text{RMSE} = 3.10\text{ mV}$ and $R^2 = 0.99971$. Active catalytic recombination ($\eta_{\text{recomb}} = 0.88$) and $i_{\min} = 0.20\text{ A/cm}^2$ guarantee anodic $\text{H}_2$-in-$\text{O}_2 \le 1.64\text{ mol\%} < 2.0\text{ mol\%}$ ($50\%$ LEL safety limit).
+3. **Leak-Free Physics-Guided Surrogate (`Green-MLP`):** Strict $2 \times 5$ factorial ablation across 2 feature representations (Raw 5D vs.\ Leak-Free 12D Physics) and 5 model families. Green-MLP ($4,612$ parameters, $8,784$ FLOPs) achieves 5-fold CV $R^2 = 0.9943 \pm 0.0031$ ($R^2_{\text{LCOH}} = 0.9982$, $\text{RMSE} = ₹1.66 \pm 0.51/\text{kg}$), an $89.94\%$ FLOP reduction over regularized deep networks, and a $4,206\times$ inference acceleration over Numba-compiled 52,608-hour DAE simulations. Out-of-distribution Pareto test confirms rank preservation ($\rho = 0.9994$).
+4. **Constrained NSGA-II & Split-CAPEX Dynamics:** Sizing power electronics and balance-of-plant (BOP) for peak megawatt overload throughput ($P_{\text{PEM,peak}}$) adds more capital cost than is saved on stack cell area. The optimal knee point operates at $i_{\max}^* = 1.764\text{ A/cm}^2$, achieving $\text{LCOH} = ₹332.51/\text{kg H}_2$ (\$$3.96/\text{kg}$), $\text{LPSP} = 0.62\%$, and $12.0$-year stack life. Wheeled highland wind lowers LCOH by $12.96\%$ relative to pure coastal generation ($₹382.04/\text{kg}$) and prevents catastrophic supply failure ($\text{LPSP} = 21.30\%$) under coastal wind droughts.
+5. **Multivariate Statistical Process Monitoring Reality:** Latent-variable PCA ($k=3$, $96.03\%$ variance) across 9 measurable industrial sensors does not detect incipient faults earlier than a well-designed load-compensated 1D voltage-residual EWMA chart ($11.6\text{ h}$ vs.\ $10.6\text{ h}$ latency across 100 Monte Carlo runs). However, PCA provides indispensable multi-sensor root-cause diagnosis via contribution plots ($95.2\%$ thermal-pressure isolation on dehydration, $100\%$ detection on anode flooding).
 
 ---
 
 ## Repository Structure
 
 ```text
-├── IEEE_Paper_Krishnendu_Arav.pdf       # Compiled 6-page Two-Column IEEE Conference Paper (PDF)
-├── IEEE_Paper_Krishnendu_Arav.tex       # Official IEEEtran LaTeX Source (\documentclass[conference]{IEEEtran})
+├── IEEE_Paper_Krishnendu_Arav.pdf       # Compiled Two-Column IEEE Conference Paper (PDF)
 ├── IEEE_Paper_Krishnendu_Arav.docx      # Editable Two-Column IEEE Manuscript (DOCX)
-├── simulate_and_optimize.py             # Complete DAE, Green-MLP, NSGA-II, XAI, Monte Carlo & PCA Codebase
+├── IEEE_Paper_Krishnendu_Arav.tex       # Official IEEEtran LaTeX Source Code
+├── IEEE_Paper_Krishnendu_Arav.html      # High-Resolution KaTeX HTML Source
+├── simulate_and_optimize.py             # Master simulation, surrogate, NSGA-II & PCA pipeline
+├── generate_ieee_pdf_and_docx.py        # PDF & DOCX automated builder
 ├── requirements.txt                     # Python package dependencies
+├── VALIDATION_REPORT.md                 # Experimental & physical validation report
+├── RESEARCH_AUDIT_REPORT.md             # 5-specialist critical audit report
+├── REPRODUCIBILITY_REPORT.md            # Exact execution environment & reproduction protocol
+├── PUBLICATION_STRATEGY.md              # Target venues, reviewer defense & publication roadmap
 ├── data/
-│   └── coastal_karnataka_meteo_hourly.csv  # 8,760-hour NASA POWER coastal meteorology (13.3525°N, 74.7928°E)
+│   ├── karnataka_multiyear_meteo_2019_2024.csv # 52,608-hour uninflated NASA POWER data
+│   ├── pem_polarization_calibration_exp.csv    # Experimental polarization benchmark (14 points)
+│   └── coastal_karnataka_meteo_hourly.csv      # 1-year legacy dataset reference
 ├── results/
-│   ├── summary_metrics.json             # Complete verified quantitative metrics (JSON)
-│   └── pareto_front.csv                 # Exact DAE-verified NSGA-II Pareto-optimal plant designs (CSV)
+│   ├── summary_metrics.json             # Complete verified metrics (759 lines)
+│   ├── pareto_front.csv                 # Exact-verified NSGA-II Pareto solutions
+│   └── surrogate_ablation_2x5.csv       # 5-fold CV metrics for 2x5 factorial experiment
+├── tests/
+│   └── test_scientific_validity.py      # Automated unit test suite (12 tests)
 └── figures/
     ├── fig1_coastal_meteo_and_pem_polarization.png
     ├── fig2_green_surrogate_parity_and_efficiency.png
@@ -42,90 +59,84 @@ This repository provides the complete first-principles electrochemical simulatio
 
 ---
 
-## Key Scientific & Engineering Results
+## Quickstart & Reproduction
 
-### 1. Coastal Meteorology & High-Current-Density PEMWE ($75^\circ\text{C}, 30\text{ bar}$)
-- **Seasonal Resource Complementarity ($8,760$-Hour NASA POWER Data):** Pre-monsoon summer solar PV capacity factor peaks at **$23.50\%$** (Feb–May), whereas the Arabian Sea Southwest Monsoon wind capacity factor surges to **$68.39\%$** (Jun–Sep; annual mean $40.47\%$, mean hub wind speed $6.07\text{ m/s}$).
-- **Electrochemical Performance ($i \in [0.05, 3.50]\text{ A/cm}^2$):**
-
-| Current Density $i$ ($\text{A/cm}^2$) | $V_{\text{rev}}$ (V) | $\eta_{\text{act}}$ (V) | $\eta_{\text{ohm}}$ (V) | $\eta_{\text{conc}}$ (V) | $V_{\text{cell}}$ (V) | Power Density ($\text{W/cm}^2$) | System $\text{SEC}$ ($\text{kWh/kg H}_2$) | $\eta_{\text{LHV}}$ (%) |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **0.50** | 1.217 | 0.291 | 0.056 | 0.007 | **1.571** | 0.786 | 46.50 | 71.67% |
-| **1.00** | 1.217 | 0.326 | 0.113 | 0.019 | **1.674** | 1.674 | 48.76 | 68.35% |
-| **1.80 (Nominal)** | 1.217 | 0.356 | 0.203 | 0.046 | **1.822** | 3.279 | 52.57 | 63.40% |
-| **2.50** | 1.217 | 0.372 | 0.281 | 0.078 | **1.949** | 4.872 | 56.00 | 59.52% |
-| **2.84 ($i_{\max}^*$)** | 1.217 | 0.379 | 0.320 | 0.095 | **2.011** | 5.703 | 57.68 | 57.78% |
-| **3.50 (Peak)** | 1.217 | 0.389 | 0.394 | 0.137 | **2.137** | 7.480 | 61.14 | 54.52% |
-
-![Fig. 1: Coastal Meteorology & High-Current PEM Polarization](figures/fig1_coastal_meteo_and_pem_polarization.png)
-
----
-
-### 2. Physics-Informed "Green Deep Learning" Surrogate (`Green-MLP`)
-
-| Modeling Paradigm | Architecture | Trainable Parameters | Out-of-Sample Mean $R^2$ | LCOH RMSE ($\text{INR/kg}$) | Eval Time per Design ($\text{ms}$) | Speedup vs. DAE | Compute Energy |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **First-Principles DAE** | $8,760\text{-h}$ Coupled DAE | — | $1.0000$ | $0.00$ | $156.91\text{ ms}$ | $1\times$ | $100.0\%$ |
-| **`Heavy-DNN` (Baseline)** | 5-Layer $[512,512,256,128,64]$ | $438,468$ | $0.9862$ | $2.93$ | $0.4210\text{ ms}$ | $373\times$ | $18.50\%$ |
-| **`Green-MLP` (Proposed)** | **2-Layer $[36, 18]$ + Physics Basis** | **$4,900$ ($-98.88\%$)** | **$0.9984$** | **$1.02$** | **$0.0148\text{ ms}$** | **$10,592\times$** | **$0.62\%$ ($-99.38\%$)** |
-
-![Fig. 2: Green-MLP Surrogate Validation & Efficiency](figures/fig2_green_surrogate_parity_and_efficiency.png)
-
----
-
-### 3. Multi-Objective NSGA-II Pareto Synthesis, XAI & Uncertainty Analysis
-
-| Design / Techno-Economic Metric | **NSGA-II Knee-Point Hybrid** | **Wind-Only Baseline** | **Solar-Only Baseline** | **Low-LCOH Extreme** | **Ultra-Reliable Extreme** |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Coastal Wind Capacity ($P_{\text{wind}}$)** | **51.13 MW** | 78.00 MW | 0.00 MW | 43.39 MW | 77.45 MW |
-| **Solar PV Capacity ($P_{\text{solar}}$)** | **94.73 MW** | 0.00 MW | 95.00 MW | 76.19 MW | 92.60 MW |
-| **PEM Nominal Stack ($P_{\text{PEM,nom}}$)** | **38.98 MW** | 32.00 MW | 34.00 MW | 35.09 MW | 46.84 MW |
-| **Max Current Density ($i_{\max}^*$)** | **2.84 $\text{A/cm}^2$** | 2.35 $\text{A/cm}^2$ | 2.35 $\text{A/cm}^2$ | 2.85 $\text{A/cm}^2$ | 1.75 $\text{A/cm}^2$ |
-| **Peak Stack Absorption ($P_{\text{PEM,peak}}$)** | **67.78 MW** | 44.07 MW | 46.82 MW | 61.36 MW | 45.32 MW |
-| **$\text{LiFePO}_4$ Battery Buffer ($E_{\text{batt}}$)** | **20.07 MWh** | 48.00 MWh | 85.00 MWh | 20.09 MWh | 105.05 MWh |
-| **Levelized Cost of $\text{H}_2$ (LCOH)** | **INR 296.70/kg (\$3.53)** | INR 328.90/kg (\$3.92) | INR 378.44/kg (\$4.51) | INR 274.08/kg (\$3.26) | INR 358.59/kg (\$4.27) |
-| **Unmet Demand Penalty (LPSP)** | **0.94%** | 20.82% | 35.29% | 6.33% | 0.09% |
-| **Lifecycle Carbon Intensity** | **2.203 $\text{kg CO}_2\text{e/kg}$** | 8.450 $\text{kg CO}_2\text{e/kg}$ | 14.547 $\text{kg CO}_2\text{e/kg}$ | 3.902 $\text{kg CO}_2\text{e/kg}$ | 1.727 $\text{kg CO}_2\text{e/kg}$ |
-| **Mean Voltage Degradation & Life** | **1.898 $\mu\text{V/h}$ (10.83 yr)** | 1.640 $\mu\text{V/h}$ (12.0 yr) | 1.416 $\mu\text{V/h}$ (12.0 yr) | 2.264 $\mu\text{V/h}$ (9.08 yr) | 1.547 $\mu\text{V/h}$ (12.0 yr) |
-
-![Fig. 3: Multi-Objective NSGA-II Pareto Frontier](figures/fig3_pareto_front_3d_tradeoffs.png)
-
-![Fig. 4: Explainable AI Attribution & Monte Carlo Risk Distribution](figures/fig4_xai_feature_sensitivity_and_uncertainty.png)
-
----
-
-### 4. Multivariate Statistical Fault Monitoring (PCA $T^2$ & Jackson–Mudholkar $Q$) & Dynamic Dispatch
-- **Fault 1 (Incipient Membrane Dehydration & Cationic Fouling):** Detected **$52\text{ hours}$ earlier** than univariate voltage threshold alarms ($12\text{ h}$ vs. $64\text{ h}$ latency; $89.09\%$ FDR on $Q$, $91.82\%$ on $T^2$).
-- **Fault 2 (High-Current Anodic PTL Bubble Flooding):** **$100.0\%$ FDR** with **$1.86\%$ false alarm rate (FAR)** across normal dynamic coastal operation.
-
-![Fig. 5: PCA T2 and Q/SPE Multivariate Fault Monitoring](figures/fig5_pca_fault_monitoring_t2_spe.png)
-
-![Fig. 6: Seasonal Dynamic Dispatch Verification](figures/fig6_dynamic_dispatch_monsoon_vs_summer.png)
-
----
-
-## Reproducing All Simulations, Optimization & Figures
-
+### 1. Environment Setup
 ```bash
-# 1. Install dependencies
-pip install -r requirements.txt
+# Clone the repository
+git clone https://github.com/Krishnendu409/CHEMIGNITE-Green-H2-Research.git
+cd CHEMIGNITE-Green-H2-Research
 
-# 2. Run the full simulation, Green-MLP training, NSGA-II optimization, Monte Carlo & PCA pipeline
+# Create and activate virtual environment
+python -m venv venv
+# On Windows:
+.\venv\Scripts\activate
+# On Linux/macOS:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 2. Run Master Simulation Pipeline
+Executes Numba-accelerated 52,608-hour multi-year simulation, surrogate training, 5-seed constrained NSGA-II, true $N=5,000$ Monte Carlo UQ, and 100-realization PCA fault monitoring (~156 seconds total runtime):
+```bash
 python simulate_and_optimize.py
 ```
 
-All outputs are deterministically regenerated in `results/summary_metrics.json`, `results/pareto_front.csv`, and `figures/fig1_*.png` through `figures/fig6_*.png`.
+### 3. Run Automated Validation Test Suite
+```bash
+pytest tests/test_scientific_validity.py -v
+```
+All 12 unit tests verify mathematical, physical, and economic invariants:
+- Test 1: Nernst reversible potential exactness at $75^\circ\text{C}, 30\text{ bar}$ ($1.234\text{ V} \pm 1\text{ mV}$)
+- Test 2: Polarization experimental calibration ($\text{RMSE} < 10\text{ mV}$, $R^2 > 0.999$)
+- Test 3: Crossover safety under turndown ($y_{\text{H}_2} < 2.0\text{ mol\%}$)
+- Test 4: Dynamic voltage degradation non-negativity
+- Test 5: Surrogate feature leak-free formulation (zero economic weights)
+- Test 6: Surrogate 5-fold CV accuracy ($R^2 > 0.99$, $\text{RMSE} < 3.0\text{ INR/kg}$)
+- Test 7: Deb's feasibility-first constraint handling
+- Test 8: Sizing baselines reliability compliance ($\text{LPSP} \le 1.0\%$)
+- Test 9: Split-CAPEX electrolyzer cost scaling
+- Test 10: Multi-year meteorological integrity (uninflated wind, positive GHI)
+- Test 11: PCA 9-sensor matrix condition number & variance retention ($>95\%$)
+- Test 12: End-to-end numerical consistency with `summary_metrics.json`
+
+### 4. Build IEEE Paper Documents (PDF & DOCX)
+```bash
+python generate_ieee_pdf_and_docx.py
+```
 
 ---
 
-## Citation
+## Key Quantitative Benchmark Summary
+
+| Metric / Parameter | Audited Value | Benchmark / Baseline | Significance |
+| :--- | :---: | :---: | :--- |
+| **Experimental Calibration Fit** | $\text{RMSE} = 3.10\text{ mV}, R^2 = 0.99971$ | $N=14$ Exp.\ Points (Bernt 2016) | Exact validation up to $3.0\text{ A/cm}^2$ |
+| **Reversible Nernst Potential** | $1.234\text{ V}$ | Antoine $P_{\text{sat}} = 0.3846\text{ bar}$ | Corrects historical Tetens equation bug |
+| **Green-MLP Parameters & FLOPs** | $4,612$ params, $8,784$ FLOPs | Regularized-DNN: $94,464$ FLOPs | **$-89.94\%$ FLOPs**, $4,206\times$ speedup |
+| **Surrogate Out-of-Sample $R^2$** | $0.9943 \pm 0.0031$ | GBDT: $0.9213$, GP: $0.9888$ | High accuracy without target leakage |
+| **Pareto Spearman Rank Correlation** | $\rho_{\text{LCOH}} = 0.9994, \rho_{\text{deg}} = 0.9960$ | Held-out Pareto Set ($52,608\text{ h}$) | Perfect evolutionary rank preservation |
+| **Optimal Knee-Point LCOH** | **₹332.51/kg ($3.96/kg)** | Fixed $i_{\text{nom}}$ ($1.80$): ₹329.12/kg | Split BOP CAPEX offsets overload area savings |
+| **Siting Advantage (Regime B vs A)** | **₹332.51/kg vs ₹382.04/kg** | Wheeled Wind vs Coastal Hybrid | **$-12.96\%$ LCOH** via highland wind |
+| **Coastal Drought Failure** | $\text{LPSP} = 21.30\%$ | Knee Hardware in Coastal Regime | Proves necessity of regional grid wheeling |
+| **Single-Resource Sizing Baselines** | Wind-Only: ₹550.69, Solar-Only: ₹449.27 | Reliability-Matched ($\text{LPSP} \le 1\%$) | Hybrid plant is $26.0\%\text{--}39.6\%$ cheaper |
+| **5,000-Sample Monte Carlo Mean** | $₹335.33 \pm 24.33/\text{kg}$ | 90% CI: $[₹296.58, ₹376.66]$ | $73.3\%$ probability $< ₹350/\text{kg}$ |
+| **MSPM Dehydration Detection** | Latency: $11.6 \pm 3.2\text{ h}$, $\text{FAR} = 9.80\%$ | 1D EWMA: Latency $10.6\text{ h}$, $\text{FAR} = 5.39\%$ | PCA provides multi-sensor root cause ($95.2\%$) |
+
+---
+
+## Citation & Contact
+
+If you use this codebase or methodology in your research, please cite:
 
 ```bibtex
-@inproceedings{krishnendu2026greensurrogate,
-  author    = {Krishnendu and Aggarwal, Arav},
-  title     = {Green-Surrogate Assisted Multi-Objective Optimization and Multivariate Fault Monitoring of a Coastal Hybrid Wind--Solar--{PEM} Green Hydrogen Plant under Meteorological Uncertainty},
-  booktitle = {Proceedings of the National Conference on Artificial Intelligence, Sustainable Processes, Innovation \& Renewable Energy (CHEMIGNITE / ASPIRE 2026)},
-  year      = {2026},
-  address   = {Manipal Institute of Technology (MIT), Manipal Academy of Higher Education (MAHE), Manipal, India}
+@inproceedings{krishnendu2026physics,
+  title={Physics-Guided Surrogate Optimization and Load-Compensated Multivariate Fault Monitoring of a Coastal Hybrid Wind--Solar--PEM Green Hydrogen Plant under Multi-Year Meteorological Uncertainty},
+  author={Krishnendu and Aggarwal, Arav},
+  booktitle={Proc. 2026 National Conference on Artificial Intelligence, Sustainable Processes, Innovation & Renewable Energy (CHEMIGNITE / ASPIRE 2026)},
+  address={Manipal, Karnataka, India},
+  year={2026}
 }
 ```
