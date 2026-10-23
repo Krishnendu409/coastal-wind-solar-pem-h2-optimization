@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHEMIGNITE 2026 | Physics-Guided Surrogate Optimization & Fault Monitoring of a Coastal Hybrid Wind–Solar–PEM Green Hydrogen Plant</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+  <style>
+    :root {
+      --bg-dark: #0B132B;
+      --bg-card: #1C2541;
+      --bg-panel: #131B33;
+      --accent-teal: #10B981;
+      --accent-cyan: #06B6D4;
+      --accent-amber: #F59E0B;
+      --accent-crimson: #EF4444;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --border-subtle: rgba(148, 163, 184, 0.22);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at top right, #1E293B, #0B132B 70%);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      height: 54px;
+      background: rgba(11, 19, 43, 0.92);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      z-index: 10;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+      color: var(--accent-teal);
+    }
+    .brand span.badge {
+      background: rgba(16, 185, 129, 0.16);
+      border: 1px solid var(--accent-teal);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.18s;
+    }
+    .btn:hover {
+      border-color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.18);
+    }
+    .deck-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 30px 48px;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+      animation: fadeIn 0.28s ease-out;
+    }
+    .slide.active { display: flex; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .slide-header {
+      border-left: 5px solid var(--accent-teal);
+      padding-left: 16px;
+      margin-bottom: 16px;
+    }
+    .slide-kicker {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+    .slide-title {
+      font-size: 1.7rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-top: 4px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.05fr 1.15fr;
+      gap: 22px;
+      flex: 1;
+      align-items: center;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .card {
+      background: rgba(28, 37, 65, 0.78);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 16px 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+    .card h3 {
+      font-size: 1.0rem;
+      color: var(--accent-amber);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card ul {
+      padding-left: 18px;
+      line-height: 1.52;
+      font-size: 0.91rem;
+      color: #E2E8F0;
+    }
+    .card ul li { margin-bottom: 6px; }
+    .kpi-card {
+      background: linear-gradient(145deg, rgba(28, 37, 65, 0.92), rgba(15, 23, 42, 0.92));
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 10px;
+      padding: 12px 14px;
+      text-align: center;
+    }
+    .kpi-val {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--accent-teal);
+    }
+    .kpi-lbl {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+    .fig-box {
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 8px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .fig-box img {
+      max-width: 100%;
+      max-height: 52vh;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+    .fig-caption {
+      color: #1E293B;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 5px;
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-top: 6px;
+    }
+    table.data-table th, table.data-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+    table.data-table th {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+    table.data-table tr.highlight {
+      background: rgba(16, 185, 129, 0.16);
+      font-weight: 700;
+    }
+    .eq-box {
+      background: rgba(15, 23, 42, 0.85);
+      border-left: 4px solid var(--accent-cyan);
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin: 8px 0;
+      font-size: 0.90rem;
+      overflow-x: auto;
+    }
+    .notes-drawer {
+      position: fixed;
+      bottom: 36px;
+      left: 48px;
+      right: 48px;
+      background: rgba(15, 23, 42, 0.97);
+      border: 1px solid var(--accent-amber);
+      border-radius: 10px;
+      padding: 14px 20px;
+      display: none;
+      z-index: 25;
+      box-shadow: 0 -8px 25px rgba(0,0,0,0.5);
+    }
+    .notes-drawer.open { display: block; }
+    .notes-drawer h4 { color: var(--accent-amber); font-size: 0.88rem; margin-bottom: 6px; }
+    .notes-drawer p { font-size: 0.88rem; color: #E2E8F0; line-height: 1.5; }
+    footer {
+      height: 32px;
+      background: rgba(11, 19, 43, 0.95);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .progress-bar {
+      height: 4px;
+      background: var(--accent-teal);
+      transition: width 0.25s;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <span class="badge">CHEMIGNITE 2026 • ASPIRE</span>
+      <span>MIT Manipal | Research Paper Presentation</span>
+    </div>
+    <div class="controls">
+      <button class="btn" onclick="prevSlide()">◀ Prev</button>
+      <span id="slide-indicator" style="font-size:0.88rem; font-weight:700; min-width:65px; text-align:center;">1 / 10</span>
+      <button class="btn" onclick="nextSlide()">Next ▶</button>
+      <button class="btn" onclick="toggleNotes()">🎙️ Evaluator Defense Notes (N)</button>
+      <button class="btn" onclick="toggleFullScreen()">⛶ Fullscreen (F)</button>
+    </div>
+  </header>
+  <div id="progress" class="progress-bar" style="width: 10%;"></div>
+
+  <div class="deck-container">
+
+    <!-- SLIDE 1: TITLE & EXECUTIVE OVERVIEW -->
+    <section class="slide active" data-notes="Welcome Chief Guest Prof. Kishalay Mitra (IIT Hyderabad) and Dr. Muddu Madakyaru (MIT Manipal). Emphasize our three core contributions: (1) Multi-year meteorological evaluation (2019-2024, 52,608h) proving wheeled highland wind out-competes coastal wind by 12.96% LCOH; (2) Experimental polarization calibration (RMSE = 3.10 mV, R2 = 0.99971) and split-CAPEX overload trade-off; (3) Leak-free Green-MLP surrogate (4,206x speedup) and honest load-compensated PCA benchmark.">
+      <div>
+        <div class="slide-header">
+          <div class="slide-kicker">National Chemical Engineering Symposium • 29 October 2026 • Sir M. Vishveshwaraiah Seminar Hall</div>
+          <h1 class="slide-title" style="font-size:1.85rem; margin-top:6px;">
+            Physics-Guided Surrogate Optimization and Load-Compensated Multivariate Fault Monitoring of a Coastal Hybrid Wind–Solar–PEM Green Hydrogen Plant under Multi-Year Meteorological Uncertainty
+          </h1>
+        </div>
+        <p style="color:var(--text-main); font-size:0.95rem; margin-bottom:8px; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.35); padding:6px 14px; border-radius:8px; display:inline-block;">
+          <strong>Authors:</strong> <strong>Krishnendu</strong> (<em>B.Tech. Computer Science &amp; Engineering, MIT Manipal</em>) &nbsp;|&nbsp; <strong>Arav Aggarwal</strong> (<em>B.Tech. Civil Engineering, School of Civil &amp; Chemical Engineering, MIT Manipal</em>)
+        </p>
+        <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:14px;">
+          <strong>Industrial Case Study:</strong> $500\text{ kg H}_2/\text{h}$ ($4,354.5\text{ t/yr}$) Green Hydrogen Hub in the <strong>Udupi–Mangalore Coastal Corridor ($13.35^\circ\text{N}, 74.79^\circ\text{E}$)</strong> with <strong>Chitradurga–Gadag Wheeled Wind</strong>
+        </p>
+
+        <div class="grid-4" style="margin-bottom:18px;">
+          <div class="kpi-card">
+            <div class="kpi-val">₹332.51 / kg</div>
+            <div class="kpi-lbl">Optimal LCOH ($3.96/kg H₂)<br>−12.96% vs Coastal / −39.6% vs Wind</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val">4,206×</div>
+            <div class="kpi-lbl">Green-MLP Speedup vs DAE<br>−89.94% FLOPs | R² = 0.9943</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val">1.764 A/cm²</div>
+            <div class="kpi-lbl">Optimal Knee Current Density<br>Split-CAPEX BOP Scaling Trade-off</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val">95.2%</div>
+            <div class="kpi-lbl">PCA Root-Cause Diagnosis<br>100% Flooding FDR | 100 Runs</div>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <h3>⚡ Pillar 1: High-Current PEMWE Physics</h3>
+            <ul>
+              <li>Calibrated against experimental data from <strong>Bernt &amp; Gasteiger (2016)</strong>: $\text{RMSE} = 3.10\text{ mV}$, $R^2 = 0.99971$.</li>
+              <li>Exact Nernst reversible potential ($V_{\text{rev}} = 1.234\text{ V}$ at $75^\circ\text{C}, 30\text{ bar}$) using Antoine vapor pressure ($0.3846\text{ bar}$).</li>
+              <li>Anodic catalytic recombination ($\eta_{\text{recomb}} = 0.88$) limits $\text{H}_2$-in-$\text{O}_2 \le 1.64\text{ mol\%} < 2.0\text{ mol\%}$ ($50\%$ LEL limit).</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>🌿 Pillar 2: Green AI &amp; Split-CAPEX Sizing</h3>
+            <ul>
+              <li>Strictly leak-free 12D physics surrogate trained on 6-year ($52,608\text{ h}$) NASA POWER reanalysis with zero cost leakage.</li>
+              <li>$89.94\%$ FLOP reduction over deep neural networks; Spearman $\rho = 0.9994$ Pareto rank preservation.</li>
+              <li>Split-CAPEX modeling proves high-current overload ($>2\text{ A/cm}^2$) increases LCOH due to peak BOP scaling.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>🛡️ Pillar 3: Load-Compensated MSPM</h3>
+            <ul>
+              <li>9-sensor industrial PCA benchmarked against load-compensated 1D voltage-residual EWMA across 100 Monte Carlo runs.</li>
+              <li>EWMA detects slightly faster ($10.6\text{ h}$ vs.\ $11.6\text{ h}$), but **PCA uniquely isolates root causes** via contribution plots.</li>
+              <li>Isolates thermal-pressure faults ($95.2\%$ contribution) during dehydration and overpotentials during flooding.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:0.82rem; color:var(--text-muted); text-align:right;">
+        Use <strong>◀ / ▶ Arrow Keys</strong> to navigate slides • Press <strong>N</strong> for Evaluator Defense Notes
+      </div>
+    </section>
+
+    <!-- SLIDE 2: MULTI-YEAR METEOROLOGY & SITING REGIMES -->
+    <section class="slide" data-notes="Explain why single-year simulations are vulnerable to climatological bias. We extracted 6 full contiguous years (2019-2024, 52,608 hours) of uninflated NASA POWER data. Show why coastal wind averages only 4.15 m/s (CF 14.70%), and why wheeling highland wind from Chitradurga-Gadag (CF 43.29%) under KERC tariffs (Rs 0.58/kWh) lowers LCOH by 12.96% and prevents severe coastal wind droughts (LPSP 21.30%).">
+      <div>
+        <div class="slide-header">
+          <div class="slide-kicker">Slide 2 • Regional Climatology &amp; Siting Regimes</div>
+          <h2 class="slide-title">Multi-Year Climatology: Coastal Solar vs. Wheeled Highland Wind</h2>
+        </div>
+        <div class="grid-2">
+          <div>
+            <div class="card" style="margin-bottom:14px;">
+              <h3>🌊 6-Year Meteorological Reality (2019–2024, 52,608 Hours)</h3>
+              <ul>
+                <li><strong>On-Site Coastal Corridor (Udupi–Mangalore, $13.35^\circ\text{N}, 74.79^\circ\text{E}$):</strong>
+                  <ul>
+                    <li>Strong solar PV resource: Tilted POA $220.59\text{ W/m}^2$, $\overline{\text{CF}}_{\text{solar}} = 21.23\%$ ($24.82\%$ in summer).</li>
+                    <li>Uninflated $100\text{ m}$ coastal wind speed averages only $4.15\text{ m/s}$, delivering $\overline{\text{CF}}_{\text{wind,coastal}} = \mathbf{14.70\%}$.</li>
+                  </ul>
+                </li>
+                <li><strong>Inland Highland Wind Corridor (Chitradurga–Gadag, $14.23^\circ\text{N}, 76.40^\circ\text{E}$):</strong>
+                  <ul>
+                    <li>Highland wind speed averages $6.69\text{ m/s}$ ($\overline{\text{CF}}_{\text{wind,gen}} = 44.82\%$, surging to $60.99\%$ during monsoon).</li>
+                    <li>Wheeled via KPTCL $220\text{ kV}$ grid ($3.4\%$ transmission loss, KERC tariff $₹0.58/\text{kWh}$) $\rightarrow$ delivered $\overline{\text{CF}} = \mathbf{43.29\%}$.</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>⚡ Siting Regime Comparison</h3>
+              <ul>
+                <li><strong>Regime B (Wheeled Highland Wind + Coastal Solar):</strong> Achieves $\text{LCOH} = \mathbf{₹332.51/\text{kg H}_2}$ ($&dollar;3.96/\text{kg}$) with $\text{LPSP} = 0.62\%$.</li>
+                <li><strong>Regime A (Pure Coastal Co-located):</strong> Requires larger battery and solar over-sizing, yielding $\text{LCOH} = \mathbf{₹382.04/\text{kg}}$ ($12.96\%$ more expensive).</li>
+                <li><strong>Coastal Wind Drought Risk:</strong> Deploying the knee-point plant solely on coastal wind without wheeling causes catastrophic supply failure ($\text{LPSP} = \mathbf{21.30\%}$).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="fig-box">
+            <img src="figures/fig1_coastal_meteo_and_pem_polarization.png" alt="Multi-Year Complementarity and Polarization" />
+            <div class="fig-caption">Fig. 1: (a) Seasonal complementarity across 6 years ($52,608\text{ h}$) between coastal solar PV and wheeled highland wind; (b) Calibrated PEMWE polarization curve against experimental data ($75^\circ\text{C}, 30\text{ bar}$).</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: CALIBRATED PEM ELECTROLYZER ELECTROCHEMISTRY -->
+    <section class="slide" data-notes="For Prof. Kishalay Mitra: Highlight that we resolved the historical Tetens bug (P_sat was 1.974 bar, now exact Antoine 0.3846 bar, giving exact V_rev = 1.234 V). Point out the experimental calibration against Bernt & Gasteiger (2016) with RMSE = 3.10 mV and R2 = 0.99971. Explain catalytic recombination safety at turndown.">
+      <div>
+        <div class="slide-header">
+          <div class="slide-kicker">Slide 3 • First-Principles Electrochemistry &amp; Experimental Calibration</div>
+          <h2 class="slide-title">Calibrated High-Current PEMWE Electrochemistry ($75^\circ\text{C}, 30\text{ bar}$)</h2>
+        </div>
+        <div class="grid-2">
+          <div>
+            <div class="eq-box">
+              $$V_{\text{cell}} = V_{\text{rev}}(T,P) + \eta_{\text{act}}(i,T) + \eta_{\text{ohm}}(i,T,\lambda) + \eta_{\text{conc}}(i,T)$$
+            </div>
+            <div class="card" style="margin-bottom:12px;">
+              <h3>⚙️ Physical Overpotential &amp; Safety Formulation</h3>
+              <ul>
+                <li><strong>Thermodynamic $V_{\text{rev}}$:</strong> Exact Antoine vapor pressure ($P_{\text{sat}} = 0.3846\text{ bar}$) $\rightarrow$ $V_{\text{rev}} = \mathbf{1.234\text{ V}}$ (correcting preliminary $1.217\text{ V}$ bug).</li>
+                <li><strong>Butler–Volmer Activation ($\eta_{\text{act}}$):</strong> Nanostructured $\text{IrO}_2$ anode ($E_a = 42\text{ kJ/mol}$) and $\text{Pt/C}$ cathode ($E_a = 16\text{ kJ/mol}$) arcsinh kinetics.</li>
+                <li><strong>Nafion 115 Ohmic ($\eta_{\text{ohm}}$):</strong> $\delta_{\text{mem}} = 127\ \mu\text{m}$, contact resistance $R_{\text{elec}} = 0.032\ \Omega\cdot\text{cm}^2$.</li>
+                <li><strong>Bubble Mass-Transport ($\eta_{\text{conc}}$):</strong> $i_{L,\text{an}} = 4.2\text{ A/cm}^2$, bubble crowding coefficient $\beta_{\text{bub}} = 0.014\text{ V}\cdot\text{cm}^{3.3}/\text{A}^{1.65}$.</li>
+                <li><strong>Turndown Safety:</strong> Catalytic recombination ($\eta_{\text{recomb}} = 0.88$) and $i_{\min} = 0.20\text{ A/cm}^2$ limit anodic $\text{H}_2$-in-$\text{O}_2 \le 1.64\text{ mol\%} < 2.0\text{ mol\%}$ ($50\%$ LEL).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <h3>📊 Experimental Calibration against Bernt &amp; Gasteiger (2016)</h3>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>$i$ (A/cm$^2$)</th>
+                  <th>$V_{\text{rev}}$ (V)</th>
+                  <th>$\eta_{\text{act}}$ (V)</th>
+                  <th>$\eta_{\text{ohm}}$ (V)</th>
+                  <th>$\eta_{\text{conc}}$ (V)</th>
+                  <th>$V_{\text{cell}}$ (V)</th>
+                  <th>$\text{SEC}_{\text{sys}}$ (kWh/kg)</th>
+                  <th>$y_{\text{H}_2}$ (mol%)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>0.50</td><td>1.234</td><td>0.293</td><td>0.056</td><td>0.007</td><td><strong>1.590</strong></td><td>46.69</td><td>0.663</td>
+                </tr>
+                <tr>
+                  <td>1.00</td><td>1.234</td><td>0.326</td><td>0.113</td><td>0.019</td><td><strong>1.691</strong></td><td>48.86</td><td>0.332</td>
+                </tr>
+                <tr class="highlight">
+                  <td>1.80 (Nom)</td><td>1.234</td><td>0.355</td><td>0.203</td><td>0.046</td><td><strong>1.838</strong></td><td>52.62</td><td>0.185</td>
+                </tr>
+                <tr>
+                  <td>2.50</td><td>1.234</td><td>0.371</td><td>0.281</td><td>0.078</td><td><strong>1.965</strong></td><td>56.01</td><td>0.133</td>
+                </tr>
+                <tr class="highlight">
+                  <td>3.00</td><td>1.234</td><td>0.380</td><td>0.338</td><td>0.106</td><td><strong>2.058</strong></td><td>58.51</td><td>0.111</td>
+                </tr>
+                <tr>
+                  <td>3.50</td><td>1.234</td><td>0.388</td><td>0.394</td><td>0.137</td><td><strong>2.153</strong></td><td>61.11</td><td>0.095</td>
+                </tr>
+              </tbody>
+            </table>
+            <p style="font-size:0.82rem; color:var(--text-muted); margin-top:8px;">
+              <strong>Validation Accuracy:</strong> $\mathbf{\text{RMSE} = 3.10\text{ mV}}$, $\mathbf{\text{MAE} = 3.01\text{ mV}}$, $\mathbf{R^2 = 0.99971}$ across $14$ experimental points ($0.10\text{–}3.0\text{ A/cm}^2$).
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: LEAK-FREE GREEN SURROGATE ABLATION -->
+    <section class="slide" data-notes="For Prof. Kishalay Mitra: Emphasize that we removed target cost leakage from preliminary literature. Our 12D physics feature map contains ZERO economic weights. Walk through the 2x5 ablation matrix showing that Green-MLP achieves 89.94% FLOP reduction over deep networks and a 4,206x speedup over Numba DAE, with near-perfect Pareto rank preservation (rho = 0.9994).">
+      <div>
+        <div class="slide-header">
+          <div class="slide-kicker">Slide 4 • Green Deep Learning &amp; Controlled Ablation</div>
+          <h2 class="slide-title">Strictly Leak-Free Green-MLP vs. Deep Neural Networks</h2>
+        </div>
+        <div class="grid-2">
+          <div>
+            <div class="card" style="margin-bottom:12px;">
+              <h3>🌱 Leak-Free Physics Feature Map</h3>
+              <ul>
+                <li><strong>Eliminating Target Leakage:</strong> Formulated $\mathbf{\Phi}(\mathbf{x})$ containing zero cost coefficients—only dimensionless capacity ratios ($P_w/P_{\text{PEM}}, P_s/P_{\text{PEM}}, E_b/P_{\text{PEM}}$), nominal-to-peak current ratios ($i_{\max}/i_{\text{nom}}$), cell overvoltage, and Faradaic efficiency.</li>
+                <li><strong>Computational Urgency:</strong> Evaluating 52,608 hours per design makes evolutionary search take hours without a surrogate. `Green-MLP` evaluates in $8.55\ \mu\text{s}$ ($\mathbf{4,206\times}$ speedup over Numba, $\mathbf{47,659\times}$ over Python ODE).</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>⚡ $2 \times 5$ Factorial Ablation Matrix (5-Fold CV)</h3>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Feature / Model</th>
+                    <th>Mean $R^2$</th>
+                    <th>LCOH $R^2$</th>
+                    <th>LCOH RMSE</th>
+                    <th>FLOPs</th>
+                    <th>Latency</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Raw 5D + MLP (lbfgs)</td><td>0.9944</td><td>0.9985</td><td>₹1.51/kg</td><td>6,768</td><td>13.9 $\mu$s</td>
+                  </tr>
+                  <tr>
+                    <td>Raw 5D + Deep-NN</td><td>0.9695</td><td>0.9869</td><td>₹4.57/kg</td><td>87,296</td><td>10.1 $\mu$s</td>
+                  </tr>
+                  <tr class="highlight">
+                    <td><strong>Physics 12D + Green-MLP</strong></td><td><strong>0.9943</strong></td><td><strong>0.9982</strong></td><td><strong>₹1.66/kg</strong></td><td><strong>8,784</strong></td><td><strong>8.55 $\mu$s</strong></td>
+                  </tr>
+                  <tr>
+                    <td>Physics 12D + Deep-NN</td><td>0.9721</td><td>0.9909</td><td>₹3.89/kg</td><td>94,464</td><td>9.45 $\mu$s</td>
+                  </tr>
+                  <tr>
+                    <td>Physics 12D + GBDT</td><td>0.9213</td><td>0.9649</td><td>₹7.56/kg</td><td>5,000</td><td>227 $\mu$s</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p style="font-size:0.80rem; color:var(--text-muted); margin-top:6px;">
+                <strong>Key Insight:</strong> Physics features reduce CV variance by $24.4\%$ and enable an $\mathbf{89.94\%}$ FLOP reduction while outperforming deep networks in accuracy.
+              </p>
+            </div>
+          </div>
+          <div class="fig-box">
+            <img src="figures/fig2_green_surrogate_parity_and_efficiency.png" alt="Surrogate Validation and Efficiency" />
+            <div class="fig-caption">Fig. 2: (a) Parity plot for LCOH ($R^2=0.9982$); (b) Stack degradation parity ($R^2=0.9946$); (c) Compute savings ($89.94\%$ FLOP reduction, $4,206\times$ speedup).</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: SPLIT-CAPEX & CONSTRAINED NSGA-II -->
+    <section class="slide" data-notes="Walk through the split-CAPEX finding (Hypothesis H1). Sizing rectifiers, transformers, and cooling loops for peak megawatt throughput P_peak adds Rs 2.44 Cr/MW, which offsets stack cell area savings. That is why the knee point operates at 1.764 A/cm2, and fixed nominal 1.80 A/cm2 achieves Rs 329.12/kg. Point out that Regime B (wheeled wind) beats pure coastal Regime A by 12.96% LCOH.">
+      <div>
+        <div class="slide-header">
+          <div class="slide-kicker">Slide 5 • Multi-Objective Evolutionary Optimization &amp; Split-CAPEX</div>
+          <h2 class="slide-title">Pareto Knee-Point Synthesis &amp; The Split-CAPEX Overload Trade-off</h2>
+        </div>
+        <div class="grid-2">
+          <div>
+            <div class="eq-box">
+              $$\text{CAPEX}_{\text{PEM}} = P_{\text{PEM,nom}}\cdot c_{\text{stack}} + P_{\text{PEM,peak}}(\mathbf{x})\cdot c_{\text{BOP}}$$
+            </div>
+            <div class="card">
+              <h3>🏆 Sizing Comparison: Knee Point vs. Baselines ($500\text{ kg H}_2/\text{h}$)</h3>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Design Metric</th>
+                    <th>Knee-Point Design</th>
+                    <th>Fixed $i_{\text{nom}} = 1.80$</th>
+                    <th>Regime A (Coastal)</th>
+                    <th>Wind-Only Baseline</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Siting Regime</td><td><strong>Regime B (Wheeled)</strong></td><td>Regime B (Wheeled)</td><td>Regime A (Coastal)</td><td>Regime B (Wheeled)</td>
+                  </tr>
+                  <tr>
+                    <td>Wind / Solar Capacity</td><td><strong>48.0 MW / 72.8 MW</strong></td><td>52.7 MW / 67.7 MW</td><td>44.0 MW / 125.6 MW</td><td>144.8 MW / 0 MW</td>
+                  </tr>
+                  <tr>
+                    <td>PEM Nom ($i_{\max}^*$)</td><td><strong>43.6 MW (1.764 A/cm²)</strong></td><td>40.5 MW (1.800)</td><td>50.5 MW (2.355)</td><td>53.9 MW (2.488)</td>
+                  </tr>
+                  <tr>
+                    <td>Peak PEM Power</td><td><strong>42.58 MW</strong></td><td>40.50 MW</td><td>69.72 MW</td><td>79.47 MW</td>
+                  </tr>
+                  <tr>
+                    <td>Battery Storage</td><td><strong>86.86 MWh</strong></td><td>75.92 MWh</td><td>83.51 MWh</td><td>147.78 MWh</td>
+                  </tr>
+                  <tr class="highlight">
+                    <td>LCOH (₹/kg | USD/kg)</td><td><strong>₹332.51 ($3.96)</strong></td><td><strong>₹329.12 ($3.92)</strong></td><td><strong>₹382.04 ($4.55)</strong></td><td>₹550.69 ($6.56)</td>
+                  </tr>
+                  <tr>
+                    <td>Unmet Demand (LPSP)</td><td><strong>0.622%</strong></td><td>0.979%</td><td>0.702%</td><td>3.501%</td>
+                  </tr>
+                  <tr>
+                    <td>Stack Life / Degradation</td><td><strong>12.0 yr (1.47 μV/h)</strong></td><td>12.0 yr (1.48)</td><td>12.0 yr (1.60)</td><td>12.0 yr (1.40)</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p style="font-size:0.80rem; color:var(--text-muted); margin-top:6px;">
+                <strong>Hypothesis H1 Resolution:</strong> Overload above nominal ($>2\text{ A/cm}^2$) does not decrease LCOH once BOP CAPEX scaling ($42\%$ of electrolyzer cost) is properly modeled!
+              </p>
+            </div>
+          </div>
+          <div class="fig-box">
+            <img src="figures/fig3_pareto_front_3d_tradeoffs.png" alt="Pareto Frontier 3D and 2D" />
+            <div class="fig-caption">Fig. 3: 5-seed constrained NSGA-II Pareto frontier ($\text{HV} = 0.8745$) in (a) 3D space and (b) 2D projection highlighting Knee-Point vs. Baselines.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: XAI & MONTE CARLO UNCERTAINTY -->
+    <section class="slide" data-notes="Highlight our true physics-evaluated Monte Carlo analysis (N = 5,000 samples) across 7 stochastic parameters. Show that the 90% confidence interval is [Rs 296.58, Rs 376.66]/kg, with 73.3% probability < Rs 350/kg. Explain that first-order Sobol indices prove Renewable CAPEX (56.65%) and WACC (21.58%) dominate uncertainty, while weather resource volatility accounts for <1.3% due to multi-year buffer sizing.">
+      <div>
+        <div class="slide-header">
+          <div class="slide-kicker">Slide 6 • Explainable AI (XAI) &amp; True Physics Monte Carlo</div>
+          <h2 class="slide-title">Sobol Sensitivity Decomposition &amp; 5,000-Run Monte Carlo Risk</h2>
+        </div>
+        <div class="grid-2">
+          <div>
+            <div class="card" style="margin-bottom:14px;">
+              <h3>🔍 Global Variance-Based Sobol Sensitivity</h3>
+              <ul>
+                <li><strong>Renewable (Wind/PV/BESS) CAPEX ($56.65\%$ Sobol Index):</strong> Primary driver of output variance.</li>
+                <li><strong>WACC / Discount Rate ($21.58\%$):</strong> Cost of capital heavily dictates annualized capital recovery.</li>
+                <li><strong>PEM Stack &amp; BOP CAPEX ($18.89\%$):</strong> Sizing and replacement cost weighting.</li>
+                <li><strong>Wheeling Tariff ($2.01\%$) &amp; Weather Volatility ($<1.3\%$):</strong> Multi-year sizing buffers effectively insulate against inter-annual meteorological anomalies.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>🎲 5,000-Sample Monte Carlo Financial Risk Profile</h3>
+              <ul>
+                <li>Evaluated on the true plant simulator under simultaneous perturbations across 7 techno-economic variables:</li>
+                <li><strong>Mean LCOH:</strong> $\mathbf{₹335.33 \pm 24.33/\text{kg}}$ ($&dollar;3.99/\text{kg}$).</li>
+                <li><strong>Median ($P_{50}$):</strong> $₹334.45/\text{kg}$.</li>
+                <li><strong>90% Confidence Interval ($P_{05}\text{--}P_{95}$):</strong> $[\mathbf{₹296.58},\, \mathbf{₹376.66}]/\text{kg}$.</li>
+                <li><strong>Bankability:</strong> $\mathbf{73.3\%}$ probability of remaining below $₹350/\text{kg}$ target.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="fig-box">
+            <img src="figures/fig4_xai_feature_sensitivity_and_uncertainty.png" alt="XAI and Monte Carlo" />
+            <div class="fig-caption">Fig. 4: (a) Permutation feature importance across objectives; (b) $5,000$-sample Monte Carlo empirical probability density and cumulative risk distribution.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: MULTIVARIATE PROCESS MONITORING (PCA VS EWMA) -->
+    <section class="slide" data-notes="For Dr. Muddu Madakyaru: Address Hypothesis H3 with complete scientific honesty. We benchmarked 9-sensor PCA against a load-compensated 1D voltage-residual EWMA filter across 100 independent Monte Carlo realizations. EWMA detects incipient dehydration slightly earlier (10.6 h vs 11.6 h). However, PCA's true value is multi-sensor root-cause diagnosis: contribution plots isolate Stack Temp (60.2%) and Cathode Pressure (35.1%) during dehydration, and Cell Voltage (34.6%) during flooding.">
+      <div>
+        <div class="slide-header">
+          <div class="slide-kicker">Slide 7 • Multivariate Statistical Process Monitoring (MSPM)</div>
+          <h2 class="slide-title">Load-Compensated PCA vs. 1D EWMA: The True Benchmark</h2>
+        </div>
+        <div class="grid-2">
+          <div>
+            <div class="eq-box">
+              $$T^2 = \mathbf{z}^T \mathbf{P}\mathbf{\Lambda}_k^{-1}\mathbf{P}^T\mathbf{z} \le 11.58, \quad Q = \|(\mathbf{I} - \mathbf{P}\mathbf{P}^T)\mathbf{z}\|^2 \le 1.85$$
+            </div>
+            <div class="card" style="margin-bottom:12px;">
+              <h3>🛡️ 100-Realization Monte Carlo Benchmark</h3>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Performance Metric</th>
+                    <th>9-Sensor PCA ($T^2/Q$)</th>
+                    <th>Load-Comp.\ EWMA</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Monitored Space</td><td>$k=3$ / 9 Sensors</td><td>1D Residual $r_V(t)$</td>
+                  </tr>
+                  <tr>
+                    <td>Normal False Alarm Rate (FAR)</td><td>$9.80 \pm 0.87\%$</td><td><strong>5.39%</strong></td>
+                  </tr>
+                  <tr>
+                    <td>Fault 1 Detection Rate (FDR)</td><td>$86.34\%$ ($Q$) / $91.81\%$ ($T^2$)</td><td><strong>89.44 $\pm$ 2.71%</strong></td>
+                  </tr>
+                  <tr class="highlight">
+                    <td>Fault 1 Detection Latency</td><td>11.6 $\pm$ 3.2 h</td><td><strong>10.6 $\pm$ 3.6 h</strong></td>
+                  </tr>
+                  <tr>
+                    <td>Fault 2 (Flooding) FDR</td><td><strong>100.0 $\pm$ 0.0%</strong></td><td><strong>100.0 $\pm$ 0.0%</strong></td>
+                  </tr>
+                  <tr class="highlight">
+                    <td>Root-Cause Diagnosis</td><td><strong>YES (Contribution Plots)</strong></td><td>NONE (1D Scalar)</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p style="font-size:0.80rem; color:var(--text-muted); margin-top:6px;">
+                <strong>Hypothesis H3 Resolution:</strong> PCA does not detect earlier than load-compensated EWMA. Its true value is **multi-sensor diagnostic isolation**.
+              </p>
+            </div>
+          </div>
+          <div class="fig-box">
+            <img src="figures/fig5_pca_fault_monitoring_t2_spe.png" alt="PCA Fault Monitoring" />
+            <div class="fig-caption">Fig. 5: (a) Hotelling's $T^2$ chart; (b) Jackson–Mudholkar $Q/\text{SPE}$ chart; (c) Variable contribution plots isolating Stack Temp ($60.2\%$) and Pressure ($35.1\%$) for Fault 1.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: SEASONAL DYNAMIC DISPATCH -->
+    <section class="slide" data-notes="Demonstrate that the plant operates smoothly across both seasonal extremes: high daytime solar ramping with buffer storage charging in summer (April) vs steady round-the-clock baseload wind electrolysis in monsoon (July) with zero battery cycling.">
+      <div>
+        <div class="slide-header">
+          <div class="slide-kicker">Slide 8 • Dynamic Multi-Year Dispatch Verification</div>
+          <h2 class="slide-title">Seasonal Operational Profiles: Summer Solar vs. Monsoon Wind</h2>
+        </div>
+        <div class="grid-2">
+          <div>
+            <div class="card" style="margin-bottom:14px;">
+              <h3>☀️ Pre-Monsoon Summer Week (April, 168-Hour Window)</h3>
+              <ul>
+                <li><strong>Diurnal Solar Pulse:</strong> On-site solar PV peaks at $\sim 70\text{ MW}$ around noon.</li>
+                <li><strong>Buffer Management:</strong> Daytime hydrogen generation ramps to $1,050\text{ kg/h}$, charging the $30\text{ bar}$ buffer tank to its $14,000\text{ kg}$ capacity to sustain continuous $500\text{ kg/h}$ delivery overnight.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>🌧️ Southwest Monsoon Week (July, 168-Hour Window)</h3>
+              <ul>
+                <li><strong>Highland Wind Baseload:</strong> Heavy monsoon cloud cover attenuates solar output, but sustained highland wind provides continuous $30\text{–}45\text{ MW}$ power delivery.</li>
+                <li><strong>High-Efficiency Nominal Electrolysis:</strong> PEM stack operates steadily near nominal efficiency ($1.1\text{–}1.4\text{ A/cm}^2$, $\eta_{\text{LHV}} > 64\%$) delivering $480\text{–}540\text{ kg H}_2/\text{h}$ with minimal battery cycling.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="fig-box">
+            <img src="figures/fig6_dynamic_dispatch_monsoon_vs_summer.png" alt="Dynamic Dispatch Verification" />
+            <div class="fig-caption">Fig. 6: Hourly dispatch profiles of the Knee-Point Plant across (a) a Summer week (April) and (b) a Southwest Monsoon week (July); (c) $30\text{ bar}$ buffer inventory.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: CONCLUSIONS & ROADMAP -->
+    <section class="slide" data-notes="Summarize the core takeaways: (1) Siting: wheeled highland wind cuts LCOH by 12.96% and avoids drought failure; (2) Electrochemistry: split-CAPEX scaling refutes high-current overload benefits; (3) Green AI: leak-free Green-MLP achieves 89.94% FLOP reduction and 4,206x speedup; (4) Monitoring: PCA provides critical root-cause diagnosis.">
+      <div>
+        <div class="slide-header">
+          <div class="slide-kicker">Slide 9 • Conclusions &amp; Policy Implications</div>
+          <h2 class="slide-title">Summary of Scientific Findings &amp; Coastal Deployment Roadmap</h2>
+        </div>
+        <div class="grid-2" style="margin-bottom:16px;">
+          <div class="card">
+            <h3>🔬 Key Scientific Discoveries</h3>
+            <ul>
+              <li><strong>1. Regional Siting Advantage:</strong> Wheeled highland wind from Chitradurga–Gadag lowers LCOH by $\mathbf{12.96\%}$ relative to pure coastal generation ($\text{INR } 332.51/\text{kg}$ vs $\text{INR } 382.04/\text{kg}$) and avoids coastal wind drought failure ($\text{LPSP} = 21.30\%$).</li>
+              <li><strong>2. Split-CAPEX Overload Trade-off:</strong> Sizing rectifiers and BOP for peak overload power outweighs membrane area savings. Optimal knee point operates at $i_{\max}^* = 1.764\text{ A/cm}^2$; nominal current sizing yields $\text{INR } 329.12/\text{kg}$.</li>
+              <li><strong>3. Leak-Free Green AI Surrogate:</strong> `Green-MLP` ($4,612$ params) achieves $R^2 = 0.9943 \pm 0.0031$ and $\rho = 0.9994$ rank preservation, cutting forward FLOPs by $\mathbf{89.94\%}$ and accelerating simulation by $\mathbf{4,206\times}$.</li>
+              <li><strong>4. Diagnostic Realities:</strong> PCA does not detect earlier than load-compensated EWMA ($11.6\text{ h}$ vs $10.6\text{ h}$), but provides critical multi-sensor root-cause diagnosis ($95.2\%$ thermal-pressure isolation).</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>🏭 Industrial Deployment Roadmap for Karnataka</h3>
+            <ul>
+              <li><strong>Phase 1 (Open-Access PPA):</strong> Execute green open-access power purchase agreement for $48\text{ MW}$ highland wind under KERC wheeling regulations.</li>
+              <li><strong>Phase 2 (Co-Located Solar &amp; Electrolysis):</strong> Deploy $73\text{ MW}$ tilted solar PV adjacent to industrial off-takers in Mangalore with $44\text{ MW}$ nominal PEMWE stack ($14\text{ t}$ buffer).</li>
+              <li><strong>Phase 3 (Online Digital Twin &amp; MSPM):</strong> Deploy `Green-MLP` for real-time dispatch scheduling and PCA $T^2/Q$ charts for early fault diagnosis.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: REFERENCES & Q&A DEFENSE -->
+    <section class="slide" data-notes="Thank the evaluators and open the floor for questions. Refer to our published validation report and reproducible repository.">
+      <div>
+        <div class="slide-header">
+          <div class="slide-kicker">Slide 10 • Verified Literature &amp; Evaluator Defense</div>
+          <h2 class="slide-title">Bibliography &amp; Open Defense for CHEMIGNITE 2026</h2>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>📚 Key Peer-Reviewed References (DOIs Verified)</h3>
+            <ul style="font-size:0.84rem; line-height:1.45;">
+              <li><strong>Pujari, Inapakurthi &amp; Mitra (2026):</strong> <em>Comput. Chem. Eng.</em>, DOI: 10.1016/j.compchemeng.2026.108842.</li>
+              <li><strong>Masampally, Mitra &amp; Runkana (2026):</strong> <em>Energy Convers. Manage.</em>, DOI: 10.1016/j.enconman.2026.121110.</li>
+              <li><strong>Bernt &amp; Gasteiger (2016):</strong> <em>J. Electrochem. Soc.</em>, DOI: 10.1149/2.0651611jes.</li>
+              <li><strong>Rakousky et al. (2016):</strong> <em>J. Power Sources</em>, DOI: 10.1016/j.jpowsour.2016.06.082.</li>
+              <li><strong>Madakyaru et al. (2024):</strong> <em>J. Process Control</em>, DOI: 10.1016/j.jprocont.2024.103148.</li>
+              <li><strong>Schwartz et al. (2020, Green AI):</strong> <em>Commun. ACM</em>, DOI: 10.1145/3381831.</li>
+              <li><strong>Deb et al. (2002, NSGA-II):</strong> <em>IEEE Trans. Evol. Comput.</em>, DOI: 10.1109/4235.996017.</li>
+              <li><strong>Jackson &amp; Mudholkar (1979):</strong> <em>Technometrics</em>, DOI: 10.1080/00401706.1979.10489779.</li>
+            </ul>
+          </div>
+          <div class="card" style="text-align:center; padding:24px;">
+            <h3 style="justify-content:center; color:var(--accent-teal); font-size:1.3rem; margin-bottom:12px;">Thank You!</h3>
+            <p style="font-size:1.05rem; margin-bottom:16px;">We welcome questions from Chief Guest <strong>Prof. Kishalay Mitra</strong>, <strong>Dr. Muddu Madakyaru</strong>, and the evaluation committee.</p>
+            <div style="background:rgba(16,185,129,0.12); border:1px solid var(--accent-teal); border-radius:8px; padding:12px; font-size:0.90rem; text-align:left;">
+              <p><strong>Code &amp; Data Repository:</strong> GitHub / MIT Manipal</p>
+              <p><strong>Contact:</strong> Krishnendu &amp; Arav Aggarwal, MIT Manipal</p>
+              <p><strong>Artifacts:</strong> Full IEEE LaTeX, DOCX, 6 Figures &amp; Test Suite available</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div> <!-- end deck-container -->
+
+  <!-- Speaker Notes Drawer -->
+  <div id="notes-drawer" class="notes-drawer">
+    <h4>🎙️ Evaluator Defense &amp; Q&amp;A Notes</h4>
+    <p id="notes-content">Notes text will appear here...</p>
+  </div>
+
+  <footer>
+    <span>CHEMIGNITE 2026 (ASPIRE) • MIT Manipal • Research Paper Presentation</span>
+    <span>Krishnendu (CSE) &amp; Arav Aggarwal (Civil)</span>
+  </footer>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const indicator = document.getElementById('slide-indicator');
+    const progress = document.getElementById('progress');
+    const drawer = document.getElementById('notes-drawer');
+    const notesContent = document.getElementById('notes-content');
+    let currentSlide = 0;
+
+    function updateSlide(index) {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (index + slides.length) % slides.length;
+      slides[currentSlide].classList.add('active');
+      indicator.textContent = (currentSlide + 1) + " / " + slides.length;
+      progress.style.width = ((currentSlide + 1) / slides.length * 100) + "%";
+      notesContent.textContent = slides[currentSlide].getAttribute('data-notes') || "No specific defense notes for this slide.";
+    }
+
+    function nextSlide() { updateSlide(currentSlide + 1); }
+    function prevSlide() { updateSlide(currentSlide - 1); }
+    function toggleNotes() { drawer.classList.toggle('open'); }
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') nextSlide();
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
+      else if (e.key === 'n' || e.key === 'N') toggleNotes();
+      else if (e.key === 'f' || e.key === 'F') toggleFullScreen();
+    });
+
+    updateSlide(0);
+  </script>
+</body>
+</html>
