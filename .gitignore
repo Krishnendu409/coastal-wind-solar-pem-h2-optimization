@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.synctex.gz
+.DS_Store
+Thumbs.db
