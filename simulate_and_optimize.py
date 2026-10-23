@@ -386,7 +386,9 @@ class FirstPrinciplesPEMElectrolyzer:
     def evaluate_experimental_calibration(self):
         """
         Evaluates the calibrated first-principles model against the 14-point
-        published experimental benchmark in `data/pem_polarization_calibration_exp.csv`.
+        published experimental benchmark in `data/pem_polarization_calibration_exp.csv`,
+        reporting both overall fit and a formal 10-point calibration vs. 4-point
+        held-out high-current validation split.
         """
         exp_csv = os.path.join(DATA_DIR, "pem_polarization_calibration_exp.csv")
         df_exp = pd.read_csv(exp_csv)
@@ -396,11 +398,30 @@ class FirstPrinciplesPEMElectrolyzer:
         rmse_mv = float(np.sqrt(mean_squared_error(v_exp, v_mod)) * 1000.0)
         mae_mv = float(mean_absolute_error(v_exp, v_mod) * 1000.0)
         r2_cal = float(r2_score(v_exp, v_mod))
+
+        # 10/4 Calibration vs Held-out Validation Partition:
+        # Calibration (Training) set: N=10 points, i in [0.10, 2.00] A/cm2
+        # Held-out Validation set: N=4 points, i in [2.25, 3.00] A/cm2 (high-overload regime)
+        train_mask = i_exp <= 2.00
+        val_mask = i_exp > 2.00
+        rmse_train_mv = float(np.sqrt(mean_squared_error(v_exp[train_mask], v_mod[train_mask])) * 1000.0)
+        mae_train_mv = float(mean_absolute_error(v_exp[train_mask], v_mod[train_mask]) * 1000.0)
+        rmse_val_mv = float(np.sqrt(mean_squared_error(v_exp[val_mask], v_mod[val_mask])) * 1000.0)
+        mae_val_mv = float(mean_absolute_error(v_exp[val_mask], v_mod[val_mask]) * 1000.0)
+        r2_val = float(r2_score(v_exp[val_mask], v_mod[val_mask]))
+
         return {
             "n_points": len(df_exp),
+            "n_train_points": int(np.sum(train_mask)),
+            "n_val_points": int(np.sum(val_mask)),
             "rmse_mV": round(rmse_mv, 2),
             "mae_mV": round(mae_mv, 2),
             "r2_score": round(r2_cal, 5),
+            "rmse_train_mV": round(rmse_train_mv, 2),
+            "mae_train_mV": round(mae_train_mv, 2),
+            "rmse_val_mV": round(rmse_val_mv, 2),
+            "mae_val_mV": round(mae_val_mv, 2),
+            "r2_val_score": round(r2_val, 5),
             "i_exp_a_cm2": [float(x) for x in i_exp],
             "v_exp_v": [float(x) for x in v_exp],
             "v_model_v": [round(float(x), 4) for x in v_mod],
@@ -639,7 +660,7 @@ class HybridWindSolarPEMSimulator:
             wheeling_rate = 0.0
         else:
             cf_w = self.cf_wind_highland_deliv
-            wheeling_rate = 0.72
+            wheeling_rate = self.wheeling_charge_inr_kwh
 
         active_area_cm2 = (pem_nom_mw * 1e6) / self.p_dens_nom_w_cm2
         v_max = float(np.interp(i_max_a_cm2, self.lut_i, self.lut_v))
@@ -1849,6 +1870,8 @@ def run_pca_fault_monitoring(pem_model, knee_full):
 
     # Storage for 100 Monte Carlo realizations
     pca_far_list, pca_f1_q_fdr_list, pca_f1_t2_fdr_list, pca_f2_comb_fdr_list = [], [], [], []
+    pca_far_q_alone_list, pca_far_t2_alone_list, pca_far_pers3_list = [], [], []
+    pca_rho1_t2_list, pca_rho1_q_list = [], []
     pca_f1_lat_list, pca_f2_lat_list = [], []
     ewma_far_list, ewma_f1_fdr_list, ewma_f2_fdr_list = [], [], []
     ewma_f1_lat_list, ewma_f2_lat_list = [], []
@@ -1938,6 +1961,27 @@ def run_pca_fault_monitoring(pem_model, knee_full):
 
         alarm_pca = (T2_stat > T2_limit) | (Q_stat > Q_limit)
         pca_far_list.append(float(np.mean(alarm_pca[noc_mask]) * 100.0))
+        pca_far_q_alone_list.append(float(np.mean(Q_stat[noc_mask] > Q_limit) * 100.0))
+        pca_far_t2_alone_list.append(float(np.mean(T2_stat[noc_mask] > T2_limit) * 100.0))
+
+        # 3-consecutive-hour persistence rule (ISA-18.2 / event confirmation)
+        pers_alarm = np.zeros(n_pts, dtype=bool)
+        pers_cnt = 0
+        for p_idx in range(n_pts):
+            if alarm_pca[p_idx]:
+                pers_cnt += 1
+                if pers_cnt >= 3:
+                    pers_alarm[p_idx] = True
+            else:
+                pers_cnt = 0
+        pca_far_pers3_list.append(float(np.mean(pers_alarm[noc_mask]) * 100.0))
+
+        # Serial lag-1 autocorrelation under normal operating conditions
+        t2_noc = T2_stat[noc_mask]
+        q_noc = Q_stat[noc_mask]
+        pca_rho1_t2_list.append(float(np.corrcoef(t2_noc[:-1], t2_noc[1:])[0, 1]))
+        pca_rho1_q_list.append(float(np.corrcoef(q_noc[:-1], q_noc[1:])[0, 1]))
+
         pca_f1_q_fdr_list.append(float(np.mean(Q_stat[f1_mask] > Q_limit) * 100.0))
         pca_f1_t2_fdr_list.append(float(np.mean(T2_stat[f1_mask] > T2_limit) * 100.0))
         pca_f2_comb_fdr_list.append(float(np.mean(alarm_pca[f2_mask]) * 100.0))
@@ -2012,6 +2056,10 @@ def run_pca_fault_monitoring(pem_model, knee_full):
         "Q_limit_99": round(rep_pca_info["Q_limit"], 2),
         "false_alarm_rate_pct": round(float(np.mean(pca_far_list)), 2),
         "false_alarm_rate_std_pct": round(float(np.std(pca_far_list)), 2),
+        "false_alarm_rate_q_alone_pct": round(float(np.mean(pca_far_q_alone_list)), 2),
+        "false_alarm_rate_pers3_pct": round(float(np.mean(pca_far_pers3_list)), 2),
+        "autocorrelation_rho1_t2": round(float(np.mean(pca_rho1_t2_list)), 3),
+        "autocorrelation_rho1_q": round(float(np.mean(pca_rho1_q_list)), 3),
         "fault1_dehydration_fdr_Q_pct": round(float(np.mean(pca_f1_q_fdr_list)), 2),
         "fault1_dehydration_fdr_Q_std_pct": round(float(np.std(pca_f1_q_fdr_list)), 2),
         "fault1_dehydration_fdr_T2_pct": round(float(np.mean(pca_f1_t2_fdr_list)), 2),

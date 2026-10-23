@@ -167,6 +167,37 @@ class TestScientificValidity(unittest.TestCase):
             self.assertNotIn("σ_mem", v_name)
             self.assertNotIn("Membrane Cond", v_name)
 
+    def test_13_calibration_train_validation_partition(self):
+        """Verify 10-point calibration vs 4-point held-out validation partition (RMSE < 4.0 mV)."""
+        cal = self.pem.evaluate_experimental_calibration()
+        self.assertEqual(cal["n_train_points"], 10)
+        self.assertEqual(cal["n_val_points"], 4)
+        self.assertLess(cal["rmse_train_mV"], 4.0)
+        self.assertLess(cal["rmse_val_mV"], 4.0)
+        self.assertGreater(cal["r2_val_score"], 0.995)
+
+    def test_14_pca_autocorrelation_and_wheeling_breakeven(self):
+        """Verify serial autocorrelation isolation, Q-chart FAR < 3.0%, and wheeling breakeven bounds."""
+        pca = self.summary["pca_fault_monitoring"]
+        self.assertGreater(pca["autocorrelation_rho1_t2"], 0.65)
+        self.assertLess(pca["false_alarm_rate_q_alone_pct"], 3.0)
+
+        # Verify wheeling breakeven against Regime A (Rs 382.04/kg) occurs between 1.75 and 1.95 Rs/kWh
+        res_knee = self.sim.simulate_design(48.02, 72.77, 43.61, 86.86, 1.764)
+        annual_wind_kwh = (48.02 * np.sum(self.sim.cf_wind_highland_deliv) / 6.0) * 1000.0
+        annual_h2_kg = res_knee["annual_h2_tonnes"] * 1000.0
+        base_annual_cost = res_knee["lcoh_inr_kg"] * annual_h2_kg
+        base_wheeling = annual_wind_kwh * 0.72
+
+        def calc_lcoh_at_tariff(tariff):
+            new_wheeling = annual_wind_kwh * tariff
+            return (base_annual_cost - base_wheeling + new_wheeling) / annual_h2_kg
+
+        lcoh_at_175 = calc_lcoh_at_tariff(1.75)
+        lcoh_at_195 = calc_lcoh_at_tariff(1.95)
+        self.assertLess(lcoh_at_175, 382.04)
+        self.assertGreater(lcoh_at_195, 382.04)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

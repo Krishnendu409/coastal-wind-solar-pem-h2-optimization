@@ -73,7 +73,14 @@
       1.9649,
       2.0202,
       2.0575
-    ]
+    ],
+    "n_train_points": 10,
+    "n_val_points": 4,
+    "rmse_train_mV": 3.29,
+    "mae_train_mV": 2.84,
+    "rmse_val_mV": 2.56,
+    "mae_val_mV": 2.45,
+    "r2_val_score": 0.9977
   },
   "pem_electrochemistry_75C_30bar": {
     "0.5_A_cm2": {
@@ -753,7 +760,11 @@
       0.09,
       0.01,
       11.07
-    ]
+    ],
+    "false_alarm_rate_q_alone_pct": 1.72,
+    "false_alarm_rate_pers3_pct": 4.2,
+    "autocorrelation_rho1_t2": 0.718,
+    "autocorrelation_rho1_q": 0.167
   },
   "execution_time_s": 156.23
 }
