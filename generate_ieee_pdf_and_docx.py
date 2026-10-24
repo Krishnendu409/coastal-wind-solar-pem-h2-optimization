@@ -420,18 +420,18 @@ calc_b2_rows = [
     ["KERC Open-Access Wheeling Cost", "182,279 MWh/yr delivered wind · INR 0.72/kWh (KPTCL Base Tariff)", "INR 13.12 Cr/yr"],
     ["Net Secondary Operating Costs", "Water (INR 1.84 Cr) + Grid (INR 1.19 Cr) - Curtailment (INR 3.76 Cr)", "-INR 0.73 Cr/yr"],
     ["Total Net Annualized Cost", "AnnCAPEX + Fixed O&M + Replacement + Wheeling + Secondary", "INR 145.71 Cr/yr"],
-    ["Annual Delivered Hydrogen", "Simulated dispatch: 4,358,474 kg green (99.38%) + 27,269 kg grid (0.62%)", "4,385,743 kg/yr (4,385.7 t/yr)"],
-    ["LCOH (Delivered Hydrogen)", "INR 145.71e7 / 4,385,743 kg total delivered H₂", "INR 332.25/kg H₂ ($3.96/kg)"],
-    ["LCOH (Pure Green Hydrogen)", "INR 144.80e7 / 4,354,500 kg green H₂ (4,358,474 kg simulated)", "INR 332.51/kg H₂ ($3.96/kg)"]
+    ["Delivered Hydrogen Ledger", "Simulated green (4,354,497 kg, 99.38%) + grid (27,244 kg, 0.62%)", "4,381,741 kg/yr (4,381.7 t/yr)"],
+    ["LCOH (Delivered Hydrogen)", "INR 145.703e7 / 4,381,741 kg delivered H₂", "INR 332.51/kg H₂ ($3.96/kg)"],
+    ["LCOH (Pure Green Hydrogen)", "INR 144.519e7 / 4,354,497 kg green H₂ (4,354.5 t/yr)", "INR 331.88/kg H₂ ($3.95/kg)"]
 ]
 add_calc_box("Calculation Box 2: Worked Techno-Economic & LCOH Derivation (Knee-Point Plant)", calc_b2_rows)
 add_body_p(
-    "Dual LCOH Metric Reconciliation: Calculation Box 2 and Table III explicitly reconcile two standard industrial metrics: "
-    "(1) LCOH_delivered = INR 332.25/kg H₂ ($3.96/kg) amortizes total lifecycle costs (INR 145.71 Cr/yr) over all 4,385,743 kg/yr "
-    "of product gas delivered to the customer (including 0.62% grid backup to honor an uninterrupted industrial contract); and "
-    "(2) LCOH_green = INR 332.51/kg H₂ ($3.96/kg) allocates net annualized costs (excluding grid purchases) strictly to the 4,354,500 kg/yr "
-    "of pure electrolytic green molecules (4,358,474 kg simulated). Both evaluate to $3.96/kg, establishing that the 0.62% grid reliability "
-    "bridge introduces an economic variance of only INR 0.26/kg (0.08%) while eliminating industrial supply disruption penalties."
+    "Production Ledger & Dual LCOH Reconciliation: Table III and Calculation Box 2 provide an audited production ledger: "
+    "(1) LCOH_delivered = INR 332.51/kg H₂ ($3.96/kg) amortizes total net lifecycle expenditure (INR 145.70 Cr/yr) over all 4,381,741 kg/yr "
+    "of delivered hydrogen (500 kg/h continuous demand across 6 years, including 0.62% grid backup of 27,244 kg/yr during droughts); and "
+    "(2) LCOH_green = INR 331.88/kg H₂ ($3.95/kg) allocates net annualized costs excluding grid electricity (INR 144.52 Cr/yr) strictly to "
+    "the 4,354,497 kg/yr (4,354.5 t/yr) of pure renewable green molecules. Both evaluate to ~$3.96/kg, confirming that the 0.62% grid "
+    "reliability bridge introduces an economic variance of only INR 0.63/kg (0.19%) while guaranteeing commercial supply continuity."
 )
 
 add_fullwidth_fig(
@@ -503,7 +503,8 @@ add_body_p(
     "The reproducibility pack includes: (1) Complete Python dependency lockfile (requirements.txt, Python 3.10+, NumPy 1.24+, SciPy 1.10+, scikit-learn 1.2+, "
     "Numba 0.57+) with 5 fixed random seeds s = [101, 202, 303, 404, 505]; (2) Contiguous 6-year (2019–2024, 52,608 hourly entries) uninflated NASA POWER "
     "MERRA-2 meteorological records for coastal and highland corridors; (3) 14-point semi-empirical PEMWE polarization dataset (Nafion 115, 75°C, 30 bar) "
-    "with calibration and validation splits; (4) One-click reproduction workflow (python simulate_and_optimize.py --reproduce-all) regenerating all metrics, "
+    "partitioned into calibration (N_cal = 10, i <= 2.0 A/cm², RMSE = 3.29 mV) and validation (N_val = 4, i in [2.25, 3.00] A/cm², RMSE = 2.56 mV, R² = 0.9977) splits; "
+    "(4) One-click reproduction workflow (python simulate_and_optimize.py --reproduce-all) regenerating all metrics, "
     "tables, and 6 figures in <45 s; and (5) Automated 14-test verification suite (python -m unittest discover tests) passing in <3 s.",
     indent=False
 )
