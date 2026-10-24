@@ -417,9 +417,9 @@ calc_b2_rows = [
     ["Annualized Capital Cost", "0.10567 · INR 1,012.26 Cr", "INR 106.97 Cr/yr"],
     ["Annual Fixed O&M Cost", "2.2% on wind/solar + 3.0% on PEM + 1.5% on BESS/tanks", "INR 22.86 Cr/yr"],
     ["Mid-Life Stack Replacement", "PV discounted (60% module cost at t = 10.3 yr) annualized via CRF", "INR 3.49 Cr/yr"],
-    ["KERC Open-Access Wheeling Cost", "182,279 MWh/yr delivered wind · INR 0.72/kWh (KPTCL Base Tariff)", "INR 13.12 Cr/yr"],
-    ["Net Secondary Operating Costs", "Water (INR 1.84 Cr) + Grid (INR 1.19 Cr) - Curtailment (INR 3.76 Cr)", "-INR 0.73 Cr/yr"],
-    ["Total Net Annualized Cost", "AnnCAPEX + Fixed O&M + Replacement + Wheeling + Secondary", "INR 145.71 Cr/yr"],
+    ["KERC Open-Access Wheeling Cost", "182,112 MWh/yr delivered wind · INR 0.72/kWh (KPTCL Base Tariff)", "INR 13.11 Cr/yr"],
+    ["Net Secondary Operating Costs", "Water (INR 1.84 Cr) + Grid (INR 1.18 Cr) - Curtailment (INR 3.75 Cr)", "-INR 0.73 Cr/yr"],
+    ["Total Net Annualized Cost", "AnnCAPEX + Fixed O&M + Replacement + Wheeling + Secondary", "INR 145.70 Cr/yr"],
     ["Delivered Hydrogen Ledger", "Simulated green (4,354,497 kg, 99.38%) + grid (27,244 kg, 0.62%)", "4,381,741 kg/yr (4,381.7 t/yr)"],
     ["LCOH (Delivered Hydrogen)", "INR 145.703e7 / 4,381,741 kg delivered H₂", "INR 332.51/kg H₂ ($3.96/kg)"],
     ["LCOH (Pure Green Hydrogen)", "INR 144.519e7 / 4,354,497 kg green H₂ (4,354.5 t/yr)", "INR 331.88/kg H₂ ($3.95/kg)"]
@@ -456,9 +456,10 @@ add_fullwidth_fig(
     "Fig. 5. Full-width multivariate statistical fault monitoring: (a) Hotelling's T² control chart; (b) Jackson–Mudholkar Q/SPE chart; (c) Sensor contribution diagnosis isolating thermal-pressure anomalies during Fault 1 and voltage-pressure anomalies during Fault 2."
 )
 add_body_p(
-    "Addressing Hypothesis H3: PCA does not detect incipient faults faster than load-compensated EWMA (11.6 h latency for PCA vs. 10.6 h for EWMA; "
-    "FAR = 9.80% vs. 5.39%). However, PCA provides indispensable multi-sensor root-cause diagnosis via contribution plots, isolating Stack Temperature "
-    "(60.17%) and Cathode Pressure (35.07%) during membrane dehydration, and Cell Voltage (34.61%) and Cathode Pressure (26.04%) during anodic flooding."
+    "Addressing Hypothesis H3: PCA does not detect incipient faults faster than load-compensated EWMA under pointwise alarms (11.6 h latency for PCA vs. 10.6 h for EWMA; "
+    "hourly pointwise FAR = 9.80% vs. 5.39%). However, under standard ANSI/ISA-18.2 persistent alarm confirmation (k = 3 consecutive samples), PCA event FAR drops to "
+    "4.20% (outperforming EWMA at 4.92%) and confirms faults in 12.0 h vs. 19.0 h for EWMA (a 7-hour confirmation lead time). Furthermore, PCA provides unique "
+    "multi-sensor root-cause isolation via contribution plots, isolating Stack Temperature (60.17%) and Cathode Pressure (35.07%) during dehydration, and Cell Voltage (34.61%) during flooding."
 )
 
 # Add Calculation Box 3 in DOCX
