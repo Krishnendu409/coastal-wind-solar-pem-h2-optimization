@@ -1,0 +1,31 @@
+{
+  "title": "Code and Simulation Artifacts: Physics-Guided Surrogate Optimization and Load-Compensated Multivariate Fault Monitoring of a Coastal Hybrid Wind-Solar-PEM Green Hydrogen Plant",
+  "upload_type": "software",
+  "description": "Simulation scripts, surrogate models, NSGA-II optimization, and PCA fault detection algorithms for a coastal hybrid wind-solar-PEM green hydrogen facility under multi-year meteorological uncertainty.",
+  "creators": [
+    {
+      "name": "Krishnendu",
+      "affiliation": "Department of Computer Science & Engineering, Manipal Institute of Technology, Manipal Academy of Higher Education, Manipal, Karnataka 576104, India"
+    },
+    {
+      "name": "Aggarwal, Arav",
+      "affiliation": "Department of Civil Engineering, Manipal Institute of Technology, Manipal Academy of Higher Education, Manipal, Karnataka 576104, India"
+    }
+  ],
+  "access_right": "open",
+  "license": "MIT",
+  "keywords": [
+    "Green Deep Learning",
+    "Physics-Informed Surrogates",
+    "NSGA-II",
+    "PEM Electrolyzer",
+    "PCA Fault Detection",
+    "Green Hydrogen"
+  ],
+  "related_identifiers": [
+    {
+      "relation": "hasPart",
+      "identifier": "https://github.com/Krishnendu409/coastal-green-hydrogen-firm-supply-data-package"
+    }
+  ]
+}
