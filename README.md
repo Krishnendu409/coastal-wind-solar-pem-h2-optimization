@@ -2,7 +2,7 @@
 
 [![Paper: IEEE Format](https://img.shields.io/badge/Paper-IEEE_Two--Column_(PDF%20%7C%20DOCX%20%7C%20TeX)-00629B?style=for-the-badge&logo=ieee)](./IEEE_Paper_Krishnendu_Arav.pdf)
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](./simulate_and_optimize.py)
-[![Validation: 100% Tests Passed](https://img.shields.io/badge/Tests-12%2F12%20Passed-10B981?style=for-the-badge)](./tests/test_scientific_validity.py)
+[![Validation: 100% Tests Passed](https://img.shields.io/badge/Tests-14%2F14%20Passed-10B981?style=for-the-badge)](./tests/test_scientific_validity.py)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gray?style=for-the-badge)](./LICENSE)
 
 **Authors:**
@@ -47,7 +47,7 @@ This repository contains the complete, independently audited, and reproducible r
 │   ├── pareto_front.csv                 # Exact-verified NSGA-II Pareto solutions
 │   └── surrogate_ablation_2x5.csv       # 5-fold CV metrics for 2x5 factorial experiment
 ├── tests/
-│   └── test_scientific_validity.py      # Automated unit test suite (12 tests)
+│   └── test_scientific_validity.py      # Automated unit test suite (14 tests)
 └── figures/
     ├── fig1_coastal_meteo_and_pem_polarization.png
     ├── fig2_green_surrogate_parity_and_efficiency.png
@@ -88,19 +88,21 @@ python simulate_and_optimize.py
 ```bash
 pytest tests/test_scientific_validity.py -v
 ```
-All 12 unit tests verify mathematical, physical, and economic invariants:
-- Test 1: Nernst reversible potential exactness at $75^\circ\text{C}, 30\text{ bar}$ ($1.234\text{ V} \pm 1\text{ mV}$)
-- Test 2: Polarization experimental calibration ($\text{RMSE} < 10\text{ mV}$, $R^2 > 0.999$)
-- Test 3: Crossover safety under turndown ($y_{\text{H}_2} < 2.0\text{ mol\%}$)
-- Test 4: Dynamic voltage degradation non-negativity
-- Test 5: Surrogate feature leak-free formulation (zero economic weights)
-- Test 6: Surrogate 5-fold CV accuracy ($R^2 > 0.99$, $\text{RMSE} < 3.0\text{ INR/kg}$)
-- Test 7: Deb's feasibility-first constraint handling
-- Test 8: Sizing baselines reliability compliance ($\text{LPSP} \le 1.0\%$)
-- Test 9: Split-CAPEX electrolyzer cost scaling
-- Test 10: Multi-year meteorological integrity (uninflated wind, positive GHI)
-- Test 11: PCA 9-sensor matrix condition number & variance retention ($>95\%$)
-- Test 12: End-to-end numerical consistency with `summary_metrics.json`
+All 14 unit tests verify mathematical, physical, and economic invariants:
+- Test 1: Multi-year dataset completeness and physical bounds (52,608 hours, 2019–2024)
+- Test 2: Nernst reversible potential exactness at $75^\circ\text{C}, 30\text{ bar}$ ($1.234\text{ V} \pm 1\text{ mV}$)
+- Test 3: Semi-empirical polarization experimental calibration ($\text{RMSE} < 10\text{ mV}$, $R^2 > 0.999$)
+- Test 4: Crossover safety under turndown ($y_{\text{H}_2} < 2.0\text{ mol\%}$)
+- Test 5: Dynamic voltage degradation non-negativity
+- Test 6: Surrogate feature leak-free formulation (zero economic weights)
+- Test 7: Surrogate 5-fold CV accuracy ($R^2 > 0.99$, $\text{RMSE} < 3.0\text{ INR/kg}$)
+- Test 8: Deb's feasibility-first constraint handling
+- Test 9: Sizing baselines reliability compliance ($\text{LPSP} \le 1.0\%$)
+- Test 10: Split-CAPEX electrolyzer cost scaling
+- Test 11: End-to-end numerical consistency with `summary_metrics.json`
+- Test 12: Pareto front feasibility and 9-sensor PCA integrity (100 MC runs, no unmeasurable $\sigma_{\text{mem}}$)
+- Test 13: Polarization calibration train-validation partition ($N_{\text{cal}}=10, N_{\text{val}}=4$, $\text{RMSE} < 4.0\text{ mV}$)
+- Test 14: PCA autocorrelation isolation ($\rho_1(T^2) > 0.65$), $Q$-alone $\text{FAR} < 3\%$, and wheeling breakeven bounds
 
 ### 4. Build IEEE Paper Documents (PDF & DOCX)
 ```bash
